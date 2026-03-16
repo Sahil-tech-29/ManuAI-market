@@ -1,0 +1,149 @@
+ /* LOGIN PAGE  */
+
+
+
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+font-family:'Segoe UI',sans-serif;
+}
+
+/* Page background */
+body{
+height:100vh;
+display:flex;
+justify-content:center;
+align-items:center;
+background:linear-gradient(135deg,#5f86d6,#48c6ef);
+}
+
+/* Wrapper */
+.login-wrapper{
+width:100%;
+display:flex;
+justify-content:center;
+align-items:center;
+}
+
+/* Main card */
+.login-card{
+width:900px;
+height:500px;
+display:flex;
+background:white;
+border-radius:12px;
+overflow:hidden;
+box-shadow:0 30px 80px rgba(0,0,0,0.25);
+}
+
+/* Left image section */
+.login-left{
+    flex:1;
+    position:relative;
+    overflow:hidden;
+}
+
+/* Image fills the entire left side */
+.login-left img{
+    width:100%;
+    height:100%;
+    object-fit:cover;
+}
+
+
+
+
+/* Right form section */
+.login-right{
+flex:1;
+padding:60px;
+display:flex;
+flex-direction:column;
+justify-content:center;
+}
+
+/* Heading */
+.login-right h2{
+font-size:28px;
+margin-bottom:8px;
+}
+
+.login-right span{
+color:#2c7be5;
+}
+
+/* subtitle */
+.login-right p{
+color:#666;
+margin-bottom:30px;
+}
+
+/* inputs */
+.login-right input{
+width:100%;
+padding:13px;
+margin-bottom:18px;
+border:1px solid #ddd;
+border-radius:6px;
+font-size:14px;
+transition:0.2s;
+}
+
+/* input focus */
+.login-right input:focus{
+outline:none;
+border-color:#2c7be5;
+box-shadow:0 0 6px rgba(44,123,229,0.3);
+}
+
+/* button */
+.login-right button{
+padding:13px;
+background:#2c7be5;
+color:white;
+border:none;
+border-radius:6px;
+font-size:16px;
+cursor:pointer;
+transition:0.3s;
+}
+
+/* hover */
+.login-right button:hover{
+background:#1a5edb;
+transform:translateY(-2px);
+}
+
+/* register text */
+.register-text{
+margin-top:20px;
+font-size:14px;
+}
+
+.register-text a{
+color:#2c7be5;
+text-decoration:none;
+font-weight:500;
+}
+
+.register-text a:hover{
+text-decoration:underline;
+}
+
+
+/* REGISTER PAGE  */
+
+
+.login-right select{
+    width:100%;
+    padding:13px;
+    margin-bottom:18px;
+    border:1px solid #ddd;
+    border-radius:6px;
+    font-size:14px;
+}
+
+
+
+

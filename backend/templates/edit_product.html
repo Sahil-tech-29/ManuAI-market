@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+<title>Edit Product</title>
+
+<link rel="stylesheet" href="{{ url_for('static', filename='css/edit_product.css') }}">
+
+</head>
+
+<body>
+
+<div class="background">
+
+<!-- Navbar -->
+
+<div class="navbar">
+
+<div class="logo">ManuAI Market</div>
+
+<div class="nav-right">
+
+<span>Hello, {{ session['name'] }}</span>
+
+<a href="/logout" class="logout-btn">Logout</a>
+
+</div>
+
+</div>
+
+
+<!-- Edit Form Container -->
+
+<div class="form-container">
+
+<h1>Edit <span class="highlight">Product</span></h1>
+
+<p>Update your product details in the marketplace.</p>
+
+<form method="POST" class="edit-form">
+
+<input type="text" name="name" value="{{ product.name }}" placeholder="Product Name">
+
+<textarea name="description" placeholder="Product Description">{{ product.description }}</textarea>
+
+<input type="number" name="price" value="{{ product.price }}" placeholder="Selling Price">
+
+<input type="number" name="manufacturing_cost" value="{{ product.manufacturing_cost }}" placeholder="Manufacturing Cost">
+
+<input type="number" name="delivery_time" value="{{ product.delivery_time }}" placeholder="Delivery Time">
+
+<button type="submit">Update Product</button>
+
+</form>
+
+</div>
+
+</div>
+
+</body>
+</html>

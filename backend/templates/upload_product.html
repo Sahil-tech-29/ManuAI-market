@@ -1,0 +1,494 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+<title>Upload Product</title>
+<link rel="stylesheet" href="{{ url_for('static', filename='css/upload_product.css') }}">
+</head>
+
+<script>
+
+// AI DESCRIPTION
+async function generateDescription(){
+
+let name = document.querySelector("[name='name']").value.trim()
+let category = document.getElementById("category").value
+
+if(category === "Other"){
+category = document.getElementById("customCategory").value.trim()
+}
+
+if(name === ""){
+alert("Please enter Product Name first.")
+return
+}
+
+if(category === ""){
+alert("Please select Product Category.")
+return
+}
+
+let formData = new FormData()
+
+formData.append("name", name)
+formData.append("category", category)
+
+let response = await fetch("/generate-description",{
+method:"POST",
+body:formData
+})
+
+let text = await response.text()
+
+document.getElementById("description_preview").innerHTML = text
+document.getElementById("description").value = text
+
+}
+
+
+// IMAGE PREVIEW
+function previewImages(event){
+
+let preview = document.getElementById("imagePreview")
+
+let file = event.target.files[0]
+
+if(file){
+
+let reader = new FileReader()
+
+reader.onload = function(e){
+
+let img = document.createElement("img")
+img.src = e.target.result
+
+preview.appendChild(img)
+
+}
+
+reader.readAsDataURL(file)
+
+}
+
+}
+
+
+// CATEGORY OTHER
+function checkCategory(){
+
+let category = document.getElementById("category").value
+let custom = document.getElementById("customCategory")
+
+if(category === "Other"){
+custom.style.display = "block"
+}
+else{
+custom.style.display = "none"
+}
+
+}
+
+
+// AI TITLE
+async function generateTitle(){
+
+let name = document.querySelector("[name='name']").value
+let category = document.getElementById("category").value
+
+if(category === "Other"){
+category = document.getElementById("customCategory").value
+}
+
+if(name === "" || category === ""){
+alert("Enter product name and category first")
+return
+}
+
+let formData = new FormData()
+
+formData.append("name", name)
+formData.append("category", category)
+
+let response = await fetch("/generate-title",{
+method:"POST",
+body:formData
+})
+
+let text = await response.text()
+
+document.getElementById("title_preview").innerText = text
+document.getElementById("title").value = text
+
+}
+
+
+// Recommended price 
+
+
+// AI PRICE RECOMMENDATION
+
+async function recommendPrice(){
+
+let name = document.querySelector("[name='name']").value.trim()
+let category = document.getElementById("category").value
+let cost = document.getElementById("manufacturing_cost").value
+
+if(category === "Other"){
+category = document.getElementById("customCategory").value.trim()
+}
+
+if(name === "" || category === "" || cost === ""){
+alert("Enter product name, category and manufacturing cost first.")
+return
+}
+
+let formData = new FormData()
+
+formData.append("name", name)
+formData.append("category", category)
+formData.append("cost", cost)
+
+let response = await fetch("/generate-price",{
+method:"POST",
+body:formData
+})
+
+let text = await response.text()
+
+document.getElementById("price_preview").innerHTML = text
+
+}
+
+// SEO TAGS 
+
+// AI SEO KEYWORDS
+
+async function generateKeywords(){
+
+let name = document.querySelector("[name='name']").value.trim()
+let category = document.getElementById("category").value
+
+if(category === "Other"){
+category = document.getElementById("customCategory").value.trim()
+}
+
+if(name === "" || category === ""){
+alert("Enter product name and category first.")
+return
+}
+
+let formData = new FormData()
+
+formData.append("name", name)
+formData.append("category", category)
+
+let response = await fetch("/generate-keywords",{
+method:"POST",
+body:formData
+})
+
+let text = await response.text()
+
+document.getElementById("keywords_preview").innerHTML = text
+document.getElementById("keywords").value = text
+
+}
+
+
+
+
+// AI MARKET COMPETITOR ANALYSIS
+
+async function analyzeMarket(){
+
+let name = document.querySelector("[name='name']").value.trim()
+let category = document.getElementById("category").value
+let cost = document.getElementById("manufacturing_cost").value
+
+if(category === "Other"){
+category = document.getElementById("customCategory").value.trim()
+}
+
+if(name === "" || category === ""){
+alert("Enter product name and category first.")
+return
+}
+
+let formData = new FormData()
+
+formData.append("name", name)
+formData.append("category", category)
+formData.append("cost", cost)
+
+let response = await fetch("/market-analysis",{
+method:"POST",
+body:formData
+})
+
+let text = await response.text()
+
+document.getElementById("market_preview").innerHTML = text
+
+}
+
+
+// AI generated final price 
+
+// AI SMART FINAL PRICE
+
+async function generateFinalPrice(){
+
+let name = document.querySelector("[name='name']").value.trim()
+let category = document.getElementById("category").value
+let cost = document.getElementById("manufacturing_cost").value
+
+if(category === "Other"){
+category = document.getElementById("customCategory").value.trim()
+}
+
+if(name === "" || category === "" || cost === ""){
+alert("Enter product name, category and manufacturing cost first.")
+return
+}
+
+let formData = new FormData()
+
+formData.append("name", name)
+formData.append("category", category)
+formData.append("cost", cost)
+
+let response = await fetch("/generate-final-price",{
+method:"POST",
+body:formData
+})
+
+let text = await response.text()
+
+document.getElementById("final_price_preview").innerHTML = text
+
+// extract number for DB
+let price = text.match(/\d+/)
+
+if(price){
+document.getElementById("final_price").value = price[0]
+}
+
+}
+
+
+</script>
+
+
+<body>
+
+<!-- NAVBAR -->
+
+<div class="navbar">
+
+<div class="logo">ManuAI Market</div>
+
+<div class="nav-right">
+<span>Hello, {{ session['name'] }}</span>
+<a href="/my-products" class="nav-btn">My Products</a>
+<a href="/logout" class="logout-btn">Logout</a>
+</div>
+
+</div>
+
+
+<!-- PAGE -->
+
+<div class="container">
+
+<h1 class="page-title">Add New Product</h1>
+
+<form method="POST" enctype="multipart/form-data">
+
+
+<!-- PRODUCT DETAILS -->
+
+<div class="section">
+
+<h2>Product Information</h2>
+
+<div class="form-grid">
+
+<div>
+<label>Product Name</label>
+<input type="text" name="name" placeholder="Example: Stainless Steel Bottle" required>
+</div>
+
+<div>
+<label>Category</label>
+
+<select name="category" id="category" onchange="checkCategory()">
+
+<option value="">Select Category</option>
+<option value="Electronics">Electronics</option>
+<option value="Kitchen">Kitchen</option>
+<option value="Clothing">Clothing</option>
+<option value="Stationery">Stationery</option>
+<option value="Furniture">Furniture</option>
+<option value="Other">Other</option>
+
+</select>
+
+<input type="text"
+name="custom_category"
+id="customCategory"
+placeholder="Enter Custom Category"
+style="display:none;">
+
+</div>
+
+</div>
+
+</div>
+
+
+<!-- AI TITLE -->
+
+<div class="section ai-section">
+
+<h2>AI Optimized Product Title</h2>
+
+<button type="button" onclick="generateTitle()" class="ai-btn">
+🤖 Generate Title
+</button>
+
+<div id="title_preview" class="ai-preview">
+AI generated product title will appear here...
+</div>
+
+<input type="hidden" name="title" id="title">
+
+</div>
+
+
+<!-- PRICING -->
+
+<div class="section">
+
+<h2>Pricing</h2>
+
+<div class="form-grid">
+
+<div>
+<label>Manufacturing Cost (₹)</label>
+<input type="number" name="manufacturing_cost" id="manufacturing_cost" placeholder="Example: 200">
+</div>
+
+<div class="delivery-box">
+<label>Delivery Time (days)</label>
+<input type="number" name="delivery_time" placeholder="Example: 3">
+</div>
+
+</div>
+
+</div>
+
+
+<!-- AI MARKET INSIGHT -->
+
+<div class="section ai-section">
+
+<h2>AI Market Competitor Insight</h2>
+
+<button type="button" onclick="analyzeMarket()" class="ai-btn">
+🤖 Analyze Competition
+</button>
+
+<div id="market_preview" class="ai-preview">
+AI market analysis will appear here...
+</div>
+
+</div>
+
+
+<!-- AI FINAL PRICE -->
+
+<div class="section ai-section">
+
+<h2>AI Smart Final Price</h2>
+
+<button type="button" onclick="generateFinalPrice()" class="ai-btn">
+🤖 Generate Final Price
+</button>
+
+<div id="final_price_preview" class="ai-preview">
+AI smart selling price will appear here...
+</div>
+
+<input type="hidden" name="price" id="final_price">
+
+</div>
+
+
+<!-- AI DESCRIPTION -->
+
+<div class="section ai-section">
+
+<h2>AI Product Description</h2>
+
+<button type="button" onclick="generateDescription()" class="ai-btn">
+🤖 Generate AI Description
+</button>
+
+<div id="description_preview" class="ai-preview">
+AI generated description will appear here...
+</div>
+
+<textarea name="description" id="description" hidden></textarea>
+
+</div>
+
+
+<!-- AI KEYWORDS -->
+
+<div class="section ai-section">
+
+<h2>AI Product SEO Keywords</h2>
+
+<button type="button" onclick="generateKeywords()" class="ai-btn">
+🤖 Generate Keywords
+</button>
+
+<div id="keywords_preview" class="ai-preview">
+AI generated SEO keywords will appear here...
+</div>
+
+<input type="hidden" name="keywords" id="keywords">
+
+</div>
+
+
+<!-- PRODUCT IMAGES -->
+
+<div class="section">
+
+<h2>Upload Product Images</h2>
+
+<div id="imagePreview" class="image-preview"></div>
+
+<div class="image-grid">
+
+<input type="file" name="image1" onchange="previewImages(event)" required>
+<input type="file" name="image2" onchange="previewImages(event)">
+<input type="file" name="image3" onchange="previewImages(event)">
+<input type="file" name="image4" onchange="previewImages(event)">
+
+</div>
+
+</div>
+
+
+<button type="submit" class="upload-btn">
+Upload Product
+</button>
+
+</form>
+
+</div>
+
+</body>
+</html>

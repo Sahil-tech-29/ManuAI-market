@@ -1,14 +1,44 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-    <title>ManuAI market</title>
+    <title>ManuAI Market Login</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
 </head>
-
 <body>
-    <h1>Welcome to ManuAI Market</h1>
-    <p>AI Powered Direct Manufacturer Marketplace</p>
+    <div class="login-wrapper">
+        <div class="login-card">
+            <!-- Left Side Image -->
+            <div class="login-left">
+                <img src="{{ url_for('static', filename='images/index_page_image.jpg') }}">
+            </div>
+            <!-- Right Side Form -->
+            <div class="login-right">
 
-    <a href="/login">Login</a>
-    <a href="/register">Register</a>
+                <h2>Welcome to <span>ManuAI Market</span></h2>
+
+                <p>AI Powered Manufacturer Marketplace</p>
+
+                <form method="POST">
+
+                    <input type="email" name="email" placeholder="Email">
+
+                    <input type="password" name="password" placeholder="Password">
+
+                    <button type="submit">Login</button>
+
+                </form>
+
+                <p class="register-text">
+                    Don't have an account?
+                    <a href="/register">Register</a>
+                </p>
+
+            </div>
+
+        </div>
+
+    </div>
+
 </body>
 </html>

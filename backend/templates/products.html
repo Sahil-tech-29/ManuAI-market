@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+<meta charset="UTF-8">
+<title>My Products | ManuAI Market</title>
+
+<link rel="stylesheet" href="{{ url_for('static', filename='css/products.css') }}">
+
+<script>
+function changeImage(element, id){
+    document.getElementById(id).src = element.src;
+}
+</script>
+
+</head>
+
+<body>
+
+<div class="background">
+
+<!-- Navbar -->
+
+<div class="navbar">
+
+<div class="logo">ManuAI Market</div>
+
+<div class="nav-right">
+<span>Hello, {{ session['name'] }}</span>
+<a href="/logout" class="logout-btn">Logout</a>
+</div>
+
+</div>
+
+<!-- ADD PRODUCT BUTTON -->
+
+<div class="top-action">
+
+<a href="/upload-product" class="add-product-btn">
+➕ Add New Product
+</a>
+
+</div>
+
+
+<!-- PRODUCTS CONTAINER -->
+
+<div class="products-container">
+
+<h1>My <span class="highlight">Products</span></h1>
+
+<p>Manage, edit and monitor the products you uploaded to the ManuAI marketplace.</p>
+
+
+<div class="product-grid">
+
+{% for product in products %}
+
+<div class="product-card">
+
+<!-- PRODUCT IMAGE -->
+
+<div class="product-image">
+
+<img id="main-{{ product.id }}"
+src="{{ url_for('static', filename='uploads/' + product.image1) }}">
+
+</div>
+
+
+<!-- THUMBNAILS -->
+
+<div class="thumbs">
+
+{% if product.image1 %}
+<img src="{{ url_for('static', filename='uploads/' + product.image1) }}"
+onclick="changeImage(this,'main-{{ product.id }}')">
+{% endif %}
+
+{% if product.image2 %}
+<img src="{{ url_for('static', filename='uploads/' + product.image2) }}"
+onclick="changeImage(this,'main-{{ product.id }}')">
+{% endif %}
+
+{% if product.image3 %}
+<img src="{{ url_for('static', filename='uploads/' + product.image3) }}"
+onclick="changeImage(this,'main-{{ product.id }}')">
+{% endif %}
+
+{% if product.image4 %}
+<img src="{{ url_for('static', filename='uploads/' + product.image4) }}"
+onclick="changeImage(this,'main-{{ product.id }}')">
+{% endif %}
+
+</div>
+
+
+<!-- PRODUCT INFO -->
+
+<div class="product-info">
+
+<h2 class="product-title">{{ product.title }}</h2>
+
+<p class="product-desc">
+{{ product.description }}
+</p>
+
+
+<div class="product-meta">
+
+<div class="price-box">
+<span class="label">Price</span>
+<span class="price">₹{{ product.price }}</span>
+</div>
+
+<div class="cost-box">
+<span class="label">Manufacturing</span>
+<span class="cost">₹{{ product.manufacturing_cost }}</span>
+</div>
+
+</div>
+
+
+<div class="delivery-box">
+🚚 Delivery in <b>{{ product.delivery_time }}</b> days
+</div>
+
+</div>
+
+
+<!-- ACTION BUTTONS -->
+
+<div class="card-actions">
+
+<a href="/edit-product/{{ product.id }}" class="edit-btn">Edit</a>
+
+<a href="/delete-product/{{ product.id }}" class="delete-btn">Delete</a>
+
+</div>
+
+</div>
+
+{% endfor %}
+
+</div>
+
+</div>
+
+</div>
+
+</body>
+</html>

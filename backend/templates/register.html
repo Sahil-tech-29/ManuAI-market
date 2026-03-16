@@ -1,30 +1,66 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
+
 <head>
-    <title>Register - ManuAI Market</title>
+<title>Register - ManuAI Market</title>
+
+<link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+
 </head>
+
 <body>
 
-<h2>Register</h2>
+<div class="login-wrapper">
+
+<div class="login-card">
+
+<!-- Left image section -->
+<div class="login-left">
+
+<img src="{{ url_for('static', filename='images/index_page_image.jpg') }}">
+
+</div>
+
+
+<!-- Right form section -->
+<br>
+<div class="login-right">
+
+<h2>Create Your <span>ManuAI Market</span><br>Account</h2>
+
+<p>Join the AI Powered Manufacturer Marketplace</p>
 
 <form method="POST">
 
-    <input type="text" name="name" placeholder="Name" required><br><br>
+<input type="text" name="name" placeholder="Full Name" required>
 
-    <input type="email" name="email" placeholder="Email" required><br><br>
+<input type="email" name="email" placeholder="Email" required>
 
-    <input type="password" name="password" placeholder="Password" required><br><br>
+<input type="password" name="password" placeholder="Password" required>
 
-    <select name="role">
-        <option value="customer">Customer</option>
-        <option value="manufacturer">Manufacturer</option>
-    </select>
+<select name="role" required>
 
-    <br><br>
+<option value="" disabled selected>Select Role</option>
+<option value="customer">Customer</option>
+<option value="manufacturer">Manufacturer</option>
 
-    <button type="submit">Register</button>
+</select>
+
+<button type="submit">Register</button>
 
 </form>
+
+<p class="register-text">
+
+Already have an account?
+<a href="/">Login</a>
+
+</p>
+
+</div>
+</div>
+
+</div>
 
 </body>
 </html>

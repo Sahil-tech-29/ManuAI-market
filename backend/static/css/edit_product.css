@@ -1,0 +1,236 @@
+/* RESET */
+
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+font-family:'Segoe UI',sans-serif;
+}
+
+
+/* BACKGROUND */
+
+.background{
+min-height:100vh;
+background:url("../images/background image.jpg") no-repeat center center;
+background-size:cover;
+position:relative;
+display:flex;
+flex-direction:column;
+}
+
+/* overlay */
+
+.background::before{
+content:"";
+position:absolute;
+top:0;
+left:0;
+width:100%;
+height:100%;
+background:rgba(255,255,255,0.85);
+backdrop-filter:blur(6px);
+z-index:0;
+}
+
+
+/* NAVBAR */
+
+.navbar{
+display:flex;
+justify-content:space-between;
+align-items:center;
+padding:18px 60px;
+background:white;
+box-shadow:0 6px 20px rgba(0,0,0,0.08);
+position:relative;
+z-index:2;
+transition:0.3s;
+}
+
+.logo{
+font-size:24px;
+font-weight:700;
+background:linear-gradient(90deg,#2c7be5,#5aa9ff);
+-webkit-background-clip:text;
+-webkit-text-fill-color:transparent;
+letter-spacing:0.5px;
+}
+
+.nav-right{
+display:flex;
+align-items:center;
+gap:18px;
+}
+
+.nav-right span{
+font-size:14px;
+background:rgba(44,123,229,0.08);
+padding:7px 16px;
+border-radius:20px;
+font-weight:500;
+}
+
+.logout-btn{
+text-decoration:none;
+background:linear-gradient(135deg,#2c7be5,#5aa9ff);
+color:white;
+padding:9px 18px;
+border-radius:8px;
+font-size:14px;
+font-weight:500;
+transition:0.25s;
+box-shadow:0 4px 12px rgba(44,123,229,0.35);
+}
+
+.logout-btn:hover{
+transform:translateY(-2px);
+box-shadow:0 8px 20px rgba(44,123,229,0.45);
+}
+
+
+/* FORM CONTAINER */
+
+.form-container{
+max-width:520px;
+margin:80px auto;
+background:white;
+padding:45px;
+border-radius:14px;
+box-shadow:
+0 25px 60px rgba(0,0,0,0.12),
+0 8px 25px rgba(0,0,0,0.06);
+text-align:center;
+position:relative;
+z-index:2;
+transition:0.3s;
+}
+
+.form-container:hover{
+transform:translateY(-4px);
+}
+
+.form-container h1{
+font-size:32px;
+margin-bottom:8px;
+color:#1f2d3d;
+font-weight:700;
+}
+
+.form-container p{
+color:#6b7a90;
+margin-bottom:30px;
+font-size:15px;
+}
+
+.highlight{
+color:#2c7be5;
+font-weight:600;
+}
+
+
+/* FORM */
+
+.edit-form{
+display:flex;
+flex-direction:column;
+gap:18px;
+text-align:left;
+}
+
+
+/* INPUTS */
+
+.edit-form input,
+.edit-form textarea{
+padding:13px 14px;
+border-radius:10px;
+border:1px solid #e3e6f0;
+font-size:15px;
+outline:none;
+transition:0.25s;
+background:#f9fbff;
+}
+
+.edit-form textarea{
+resize:none;
+height:90px;
+}
+
+
+/* INPUT HOVER */
+
+.edit-form input:hover,
+.edit-form textarea:hover{
+border-color:#2c7be5;
+}
+
+
+/* INPUT FOCUS EFFECT */
+
+.edit-form input:focus,
+.edit-form textarea:focus{
+border-color:#2c7be5;
+background:white;
+box-shadow:0 0 0 3px rgba(44,123,229,0.15);
+}
+
+
+/* BUTTON */
+
+.edit-form button{
+background:linear-gradient(135deg,#2c7be5,#5aa9ff);
+color:white;
+border:none;
+padding:14px;
+border-radius:10px;
+font-size:16px;
+font-weight:600;
+cursor:pointer;
+transition:0.25s;
+box-shadow:0 6px 18px rgba(44,123,229,0.35);
+letter-spacing:0.5px;
+}
+
+
+/* BUTTON HOVER */
+
+.edit-form button:hover{
+transform:translateY(-3px);
+box-shadow:0 10px 28px rgba(44,123,229,0.45);
+}
+
+
+/* BUTTON CLICK EFFECT */
+
+.edit-form button:active{
+transform:scale(0.97);
+}
+
+
+/* INPUT PLACEHOLDER */
+
+.edit-form input::placeholder,
+.edit-form textarea::placeholder{
+color:#9aa5b5;
+}
+
+
+/* RESPONSIVE */
+
+@media(max-width:600px){
+
+.navbar{
+padding:15px 20px;
+}
+
+.form-container{
+margin:60px 20px;
+padding:30px;
+}
+
+.form-container h1{
+font-size:26px;
+}
+
+}

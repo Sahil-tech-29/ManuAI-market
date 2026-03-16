@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+<title>Manufacturer Dashboard</title>
+
+<link rel="stylesheet" href="{{ url_for('static', filename='css/dashboard.css') }}">
+
+</head>
+
+<body>
+
+<div class="background">
+
+<!-- Navbar -->
+<div class="navbar">
+
+<div class="logo">ManuAI Market</div>
+
+<div class="nav-right">
+
+<span>Hello, {{ session['name'] }}</span>
+
+<a href="/logout" class="logout-btn">Logout</a>
+
+</div>
+
+</div>
+
+
+<!-- Dashboard Content -->
+
+<div class="dashboard-container">
+
+<h1>Manufacturer <span class="highlight">Control Panel</span></h1>
+
+<p>Manage your products, monitor listings, and grow your marketplace presence.</p>
+
+<div class="dashboard-cards">
+
+<a href="/upload-product" class="card">
+
+<img src="{{ url_for('static', filename='images/Upload_product_image.png') }}">
+
+</a>
+
+<a href="/my-products" class="card">
+
+<img src="{{ url_for('static', filename='images/View_products.png') }}">
+
+</a>
+
+</div>
+
+</div>
+
+</div>
+
+</body>
+</html>
