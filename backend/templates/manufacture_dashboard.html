@@ -14,6 +14,7 @@
 <div class="background">
 
 <!-- Navbar -->
+
 <div class="navbar">
 
 <div class="logo">ManuAI Market</div>
@@ -35,7 +36,10 @@
 
 <h1>Manufacturer <span class="highlight">Control Panel</span></h1>
 
-<p>Manage your products, monitor listings, and grow your marketplace presence.</p>
+<p>Manage your products, monitor listings, and grow your marketplace presence with AI-powered tools.</p>
+
+
+<!-- QUICK ACTION CARDS -->
 
 <div class="dashboard-cards">
 
@@ -49,11 +53,134 @@
 
 <img src="{{ url_for('static', filename='images/View_products.png') }}">
 
+
 </a>
 
 </div>
 
+
+
+<!-- STATS SECTION -->
+
+<div class="stats-section">
+
+<h2>Manufacturer Insights</h2>
+
+<div class="stats-grid">
+
+<div class="stat-box">
+<h3>Total Products</h3>
+<p>{{ total_products }}</p>
 </div>
+
+<div class="stat-box">
+<h3>Average Profit</h3>
+<p>₹ {{ avg_profit }} </p>
+</div>
+
+<div class="stat-box">
+<h3>Top Category</h3>
+<p>{{ top_category }}</p>
+</div>
+
+</div>
+
+</div>
+
+
+
+<!-- AI FEATURES SECTION -->
+
+<div class="ai-features">
+
+<h2>AI Tools Available for Manufacturers</h2>
+
+<div class="features-grid">
+
+<div class="feature">
+
+<h4>AI Product Title Generator</h4>
+
+<p>
+Generate optimized product titles automatically to improve product visibility and attract more customers in the marketplace.
+</p>
+
+</div>
+
+<div class="feature">
+
+<h4>AI Smart Pricing</h4>
+
+<p>
+Get AI-recommended selling prices based on manufacturing cost and market trends to maximize profit and stay competitive.
+</p>
+
+</div>
+
+<div class="feature">
+
+<h4>AI Product Description</h4>
+
+<p>
+Automatically create detailed and structured product descriptions that make your listings more informative and appealing.
+</p>
+
+</div>
+
+<div class="feature">
+
+<h4>AI Market Competitor Analysis</h4>
+
+<p>
+Analyze competitor pricing and product positioning to help manufacturers make smarter selling decisions.
+</p>
+
+</div>
+
+</div>
+
+</div>
+
+
+
+<!-- ABOUT PLATFORM -->
+
+<div class="about-section">
+
+<h2>About ManuAI Market Tools</h2>
+
+<p>
+
+ManuAI Market is an AI-powered marketplace platform designed specifically for manufacturers to simplify product listing and marketplace management.  
+Using Generative AI, manufacturers can automatically generate optimized product titles, detailed product descriptions, SEO keywords, and smart pricing strategies.
+
+These AI tools help manufacturers save time, improve product visibility, and compete effectively in the digital marketplace.
+
+</p>
+
+</div>
+
+
+
+<!-- MANUFACTURER TIPS -->
+
+<div class="tips-section">
+
+<h2>Tips to Improve Your Product Listings</h2>
+
+<ul>
+
+<li>Use AI-generated descriptions to create detailed and professional product listings.</li>
+
+<li>Upload high-quality product images to improve customer engagement.</li>
+
+<li>Provide accurate manufacturing cost for better AI price recommendations.</li>
+
+<li>Regularly review and update your product listings to stay competitive.</li>
+
+<li>Use AI title generation to make your products easier to discover.</li>
+
+</ul>
 
 </div>
 

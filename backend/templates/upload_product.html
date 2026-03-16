@@ -229,6 +229,8 @@ let text = await response.text()
 
 document.getElementById("market_preview").innerHTML = text
 
+
+
 }
 
 
@@ -266,11 +268,22 @@ let text = await response.text()
 
 document.getElementById("final_price_preview").innerHTML = text
 
-// extract number for DB
-let price = text.match(/\d+/)
 
-if(price){
-document.getElementById("final_price").value = price[0]
+// Extract price correctly
+let priceMatch = text.match(/₹\s*(\d+(\.\d+)?)/)
+
+if(priceMatch){
+
+let costValue = parseInt(cost)
+let price = parseFloat(priceMatch[1])
+
+// ensure minimum profit margin
+if(price < costValue){
+price = costValue + Math.round(costValue * 0.4)
+}
+
+document.getElementById("final_price").value = Math.round(price)
+
 }
 
 }
@@ -288,9 +301,15 @@ document.getElementById("final_price").value = price[0]
 <div class="logo">ManuAI Market</div>
 
 <div class="nav-right">
+
 <span>Hello, {{ session['name'] }}</span>
+
+<a href="/dashboard" class="nav-btn">Dashboard</a>
+
 <a href="/my-products" class="nav-btn">My Products</a>
+
 <a href="/logout" class="logout-btn">Logout</a>
+
 </div>
 
 </div>

@@ -79,15 +79,36 @@ def register():
 # Route to dashboards
 @app.route("/dashboard")
 def dashboard():
+
     if "user_id" not in session:
         return redirect("/")
-    
-    else:
-        if session["role"] == "customer":
-            return render_template("customer_dashboard.html")
-        
-        else:
-            return render_template("manufacture_dashboard.html")
+
+    if session["role"] == "customer":
+        return render_template("customer_dashboard.html")
+
+    products = Product.query.filter_by(manufacturing_id=session["user_id"]).all()
+
+    total_products = len(products)
+
+    profits = []
+    categories = []
+
+    for p in products:
+        if p.price and p.manufacturing_cost:
+            profits.append(p.price - p.manufacturing_cost)
+        if p.category:
+            categories.append(p.category)
+
+    avg_profit = round(sum(profits)/len(profits),2) if profits else 0
+
+    top_category = max(set(categories), key=categories.count) if categories else "None"
+
+    return render_template(
+        "manufacture_dashboard.html",
+        total_products=total_products,
+        avg_profit=avg_profit,
+        top_category=top_category
+    )
 
 
 
@@ -198,7 +219,7 @@ def edit_product(id):
 
         product.name = request.form.get("name")
         product.description = request.form.get("description")
-        product.price = request.form.get("price")
+        product.price = request.form.get("price") or product.price
         product.manufacturing_cost = request.form.get("manufacturing_cost")
         product.delivery_time = request.form.get("delivery_time")
 

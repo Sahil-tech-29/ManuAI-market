@@ -11,12 +11,49 @@
 function changeImage(element, id){
     document.getElementById(id).src = element.src;
 }
+
+// Show description 
+function showDescription(desc){
+
+let modal = document.getElementById("description-modal")
+
+document.getElementById("description-content").innerHTML = desc
+
+modal.style.display = "flex"
+modal.style.pointerEvents = "auto"
+
+}
+
+function closeDescription(){
+
+let modal = document.getElementById("description-modal")
+
+modal.style.display = "none"
+modal.style.pointerEvents = "none"
+
+}
+
+
 </script>
 
 </head>
 
 <body>
 
+<div id="description-modal" class="description-modal">
+
+    <div class="description-card">
+
+        <div class="description-header">
+            <h2>Product Description</h2>
+            <button onclick="closeDescription()">✕</button>
+        </div>
+
+        <div id="description-content" class="description-content"></div>
+
+    </div>
+
+</div>
 <div class="background">
 
 <!-- Navbar -->
@@ -26,8 +63,13 @@ function changeImage(element, id){
 <div class="logo">ManuAI Market</div>
 
 <div class="nav-right">
+
 <span>Hello, {{ session['name'] }}</span>
+
+<a href="/dashboard" class="nav-btn">Dashboard</a>
+
 <a href="/logout" class="logout-btn">Logout</a>
+
 </div>
 
 </div>
@@ -58,17 +100,13 @@ function changeImage(element, id){
 
 <div class="product-card">
 
-<!-- PRODUCT IMAGE -->
+<!-- LEFT SIDE (IMAGE AREA) -->
 
-<div class="product-image">
+<div class="product-left">
 
 <img id="main-{{ product.id }}"
+class="main-image"
 src="{{ url_for('static', filename='uploads/' + product.image1) }}">
-
-</div>
-
-
-<!-- THUMBNAILS -->
 
 <div class="thumbs">
 
@@ -94,47 +132,56 @@ onclick="changeImage(this,'main-{{ product.id }}')">
 
 </div>
 
+</div>
 
-<!-- PRODUCT INFO -->
 
-<div class="product-info">
+<!-- RIGHT SIDE (PRODUCT DETAILS) -->
+
+<div class="product-right">
 
 <h2 class="product-title">{{ product.title }}</h2>
+<span class="category-badge">{{ product.category }}</span>
 
-<p class="product-desc">
-{{ product.description }}
-</p>
 
+<div class="product-desc">
+
+<div class="desc-preview">
+{{ product.description[:200] | safe }}
+</div>
+
+<a href="#" 
+class="view-details-btn"
+onclick="showDescription(`{{ product.description | safe }}`)">
+View Full Description →
+</a>
+
+</div>
 
 <div class="product-meta">
 
 <div class="price-box">
-<span class="label">Price</span>
-<span class="price">₹{{ product.price }}</span>
+<span class="label">Selling Price</span>
+<span class="price">₹{{ "%.0f"|format(product.price or 0) }}</span>
 </div>
 
 <div class="cost-box">
-<span class="label">Manufacturing</span>
-<span class="cost">₹{{ product.manufacturing_cost }}</span>
+<span class="label">Manufacturing Cost</span>
+<span class="cost">₹{{ "%.0f"|format(product.manufacturing_cost or 0) }}</span>
 </div>
-
-</div>
-
 
 <div class="delivery-box">
-🚚 Delivery in <b>{{ product.delivery_time }}</b> days
+🚚 Delivery in {{ product.delivery_time }} days
 </div>
 
 </div>
-
-
-<!-- ACTION BUTTONS -->
 
 <div class="card-actions">
 
 <a href="/edit-product/{{ product.id }}" class="edit-btn">Edit</a>
 
 <a href="/delete-product/{{ product.id }}" class="delete-btn">Delete</a>
+
+</div>
 
 </div>
 

@@ -2,18 +2,181 @@
 <html lang="en">
 
 <head>
-
 <title>Edit Product</title>
 
-<link rel="stylesheet" href="{{ url_for('static', filename='css/edit_product.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/upload_product.css') }}">
 
 </head>
 
+<script>
+
+// CATEGORY CHECK
+
+function checkCategory(){
+
+let category = document.getElementById("category").value
+let custom = document.getElementById("customCategory")
+
+if(category === "Other"){
+custom.style.display = "block"
+}else{
+custom.style.display = "none"
+}
+
+}
+
+
+// IMAGE PREVIEW
+
+function previewImages(event){
+
+let preview = document.getElementById("imagePreview")
+
+let file = event.target.files[0]
+
+if(file){
+
+let reader = new FileReader()
+
+reader.onload = function(e){
+
+let img = document.createElement("img")
+img.src = e.target.result
+
+preview.appendChild(img)
+
+}
+
+reader.readAsDataURL(file)
+
+}
+
+}
+
+
+// AI DESCRIPTION
+
+async function generateDescription(){
+
+let name = document.querySelector("[name='name']").value.trim()
+let category = document.getElementById("category").value
+
+if(category === "Other"){
+category = document.getElementById("customCategory").value.trim()
+}
+
+if(name === "" || category === ""){
+alert("Enter product name and category first.")
+return
+}
+
+let formData = new FormData()
+
+formData.append("name", name)
+formData.append("category", category)
+
+let response = await fetch("/generate-description",{
+method:"POST",
+body:formData
+})
+
+let text = await response.text()
+
+document.getElementById("description_preview").innerHTML = text
+document.getElementById("description").value = text
+
+}
+
+
+// AI TITLE
+
+async function generateTitle(){
+
+let name = document.querySelector("[name='name']").value.trim()
+let category = document.getElementById("category").value
+
+if(category === "Other"){
+category = document.getElementById("customCategory").value.trim()
+}
+
+if(name === "" || category === ""){
+alert("Enter product name and category first.")
+return
+}
+
+let formData = new FormData()
+
+formData.append("name", name)
+formData.append("category", category)
+
+let response = await fetch("/generate-title",{
+method:"POST",
+body:formData
+})
+
+let text = await response.text()
+
+document.getElementById("title_preview").innerText = text
+document.getElementById("title").value = text
+
+}
+
+
+// AI FINAL PRICE
+
+async function generateFinalPrice(){
+
+let name = document.querySelector("[name='name']").value.trim()
+let category = document.getElementById("category").value
+let cost = document.getElementById("manufacturing_cost").value
+
+if(category === "Other"){
+category = document.getElementById("customCategory").value.trim()
+}
+
+if(name === "" || category === "" || cost === ""){
+alert("Enter product name, category and manufacturing cost first.")
+return
+}
+
+let formData = new FormData()
+
+formData.append("name", name)
+formData.append("category", category)
+formData.append("cost", cost)
+
+let response = await fetch("/generate-final-price",{
+method:"POST",
+body:formData
+})
+
+let text = await response.text()
+
+document.getElementById("final_price_preview").innerHTML = text
+
+let priceMatch = text.match(/₹\s*(\d+(\.\d+)?)/)
+
+if(priceMatch){
+
+let costValue = parseInt(cost)
+let price = parseFloat(priceMatch[1])
+
+if(price < costValue){
+price = costValue + Math.round(costValue * 0.4)
+}
+
+document.getElementById("price").value = Math.round(price)
+
+}
+
+}
+
+</script>
+
+
 <body>
 
-<div class="background">
-
-<!-- Navbar -->
+<!-- NAVBAR -->
 
 <div class="navbar">
 
@@ -23,6 +186,8 @@
 
 <span>Hello, {{ session['name'] }}</span>
 
+<a href="/my-products" class="nav-btn">My Products</a>
+
 <a href="/logout" class="logout-btn">Logout</a>
 
 </div>
@@ -30,31 +195,174 @@
 </div>
 
 
-<!-- Edit Form Container -->
+<!-- PAGE -->
 
-<div class="form-container">
+<div class="container">
 
-<h1>Edit <span class="highlight">Product</span></h1>
+<h1 class="page-title">Edit Product</h1>
 
-<p>Update your product details in the marketplace.</p>
+<form method="POST" enctype="multipart/form-data">
 
-<form method="POST" class="edit-form">
+<!-- PRODUCT DETAILS -->
 
-<input type="text" name="name" value="{{ product.name }}" placeholder="Product Name">
+<div class="section">
 
-<textarea name="description" placeholder="Product Description">{{ product.description }}</textarea>
+<h2>Product Information</h2>
 
-<input type="number" name="price" value="{{ product.price }}" placeholder="Selling Price">
+<div class="form-grid">
 
-<input type="number" name="manufacturing_cost" value="{{ product.manufacturing_cost }}" placeholder="Manufacturing Cost">
+<div>
+<label>Product Name</label>
+<input type="text" name="name" value="{{ product.name }}">
+</div>
 
-<input type="number" name="delivery_time" value="{{ product.delivery_time }}" placeholder="Delivery Time">
+<div>
 
-<button type="submit">Update Product</button>
+<label>Category</label>
 
-</form>
+<select name="category" id="category" onchange="checkCategory()">
+
+<option value="{{ product.category }}">{{ product.category }}</option>
+
+<option value="Electronics">Electronics</option>
+<option value="Kitchen">Kitchen</option>
+<option value="Clothing">Clothing</option>
+<option value="Stationery">Stationery</option>
+<option value="Furniture">Furniture</option>
+<option value="Other">Other</option>
+
+</select>
+
+<input type="text"
+name="custom_category"
+id="customCategory"
+placeholder="Enter Custom Category"
+style="display:none;">
 
 </div>
+
+</div>
+
+</div>
+
+
+<!-- AI TITLE -->
+
+<div class="section ai-section">
+
+<h2>AI Optimized Product Title</h2>
+
+<button type="button" onclick="generateTitle()" class="ai-btn">
+🤖 Regenerate Title
+</button>
+
+<div id="title_preview" class="ai-preview">
+{{ product.title }}
+</div>
+
+<input type="hidden" name="title" id="title" value="{{ product.title }}">
+
+</div>
+
+
+<!-- PRICING -->
+
+<div class="section">
+
+<h2>Pricing</h2>
+
+<div class="form-grid">
+
+<div>
+<label>Manufacturing Cost (₹)</label>
+<input type="number" name="manufacturing_cost"
+id="manufacturing_cost"
+value="{{ product.manufacturing_cost }}">
+</div>
+
+
+<div>
+<label>Delivery Time (days)</label>
+<input type="number"
+name="delivery_time"
+value="{{ product.delivery_time }}">
+</div>
+
+</div>
+
+
+
+</div>
+
+
+
+<!-- AI FINAL PRICE -->
+
+<div class="section ai-section">
+
+<h2>AI Smart Final Price</h2>
+
+<button type="button" onclick="generateFinalPrice()" class="ai-btn">
+🤖 Recalculate Price
+</button>
+
+<div id="final_price_preview" class="ai-preview">
+AI recommended price will appear here...
+</div>
+
+<input type="hidden" name="price" id="price" value="{{ product.price }}">
+
+</div>
+
+
+<!-- AI DESCRIPTION -->
+
+<div class="section ai-section">
+
+<h2>AI Product Description</h2>
+
+<button type="button" onclick="generateDescription()" class="ai-btn">
+🤖 Regenerate Description
+</button>
+
+<div id="description_preview" class="ai-preview">
+{{ product.description }}
+</div>
+
+<textarea name="description" id="description" hidden>{{ product.description }}</textarea>
+
+</div>
+
+
+<!-- PRODUCT IMAGES -->
+
+<div class="section">
+
+<h2>Product Images</h2>
+
+<div id="imagePreview" class="image-preview">
+
+<img src="{{ url_for('static', filename='uploads/' + product.image1) }}">
+
+</div>
+
+<div class="image-grid">
+
+<input type="file" name="image1" onchange="previewImages(event)">
+<input type="file" name="image2" onchange="previewImages(event)">
+<input type="file" name="image3" onchange="previewImages(event)">
+<input type="file" name="image4" onchange="previewImages(event)">
+
+</div>
+
+</div>
+
+
+<button type="submit" class="upload-btn">
+Update Product
+</button>
+
+</form>
 
 </div>
 
