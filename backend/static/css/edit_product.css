@@ -52,6 +52,7 @@ transition:0.3s;
 font-size:24px;
 font-weight:700;
 background:linear-gradient(90deg,#2c7be5,#5aa9ff);
+background-clip: text;
 -webkit-background-clip:text;
 -webkit-text-fill-color:transparent;
 letter-spacing:0.5px;
