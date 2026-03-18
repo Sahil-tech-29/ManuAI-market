@@ -1,3 +1,113 @@
-<h2>Customer Dashboard</h2>
+<!DOCTYPE html>
+<html lang="en">
 
-<a href="/products">View Products</a>
+<head>
+
+<meta charset="UTF-8">
+<title>Customer Dashboard | ManuAI Market</title>
+
+<link rel="stylesheet" href="{{ url_for('static', filename='css/customer_dashboard.css') }}">
+
+</head>
+
+<body>
+
+<!-- NAVBAR -->
+
+<div class="navbar">
+
+<div class="logo">ManuAI Market</div>
+
+<div class="nav-right">
+
+<a href="/products" class="nav-btn">Marketplace</a>
+<a href="/cart" class="nav-btn">Cart</a>
+<a href="/orders" class="nav-btn">Orders</a>
+<a href="/logout" class="logout-btn">Logout</a>
+
+</div>
+
+</div>
+
+
+<!-- WELCOME -->
+
+<div class="welcome-section">
+
+<h1>Welcome back, {{session["name"]}} 👋</h1>
+
+<p>Your AI-powered shopping experience starts here. Discover smarter, faster, better shopping.</p>
+
+</div>
+
+
+<!-- DASHBOARD CARDS -->
+
+<div class="dashboard-grid">
+
+<a href="/products" class="dashboard-card">
+<img src="{{ url_for('static', filename='images/view marketplace.png') }}" class="card-image">
+<h3>Browse Marketplace</h3>
+<p>Explore products uploaded by manufacturers.</p>
+</a>
+
+<a href="/cart" class="dashboard-card">
+<img src="{{ url_for('static', filename='images/view cart.png') }}" class="card-image">
+<h3>My Cart</h3>
+<p>Review items and proceed to checkout.</p>
+</a>
+
+<a href="/orders" class="dashboard-card">
+<img src="{{ url_for('static', filename='images/my orders.png') }}" class="card-image">
+<h3>My Orders</h3>
+<p>Track orders and view history.</p>
+</a>
+
+</div>
+
+
+<!-- AI SECTION -->
+
+<div class="ai-section">
+
+<h2>AI Shopping Assistant</h2>
+<p>Make smarter decisions with intelligent insights.</p>
+
+<div class="ai-grid">
+
+<div class="ai-card">
+<h4>✨ Product Summary</h4>
+<p>Understand products quickly with AI summaries.</p>
+</div>
+
+<div class="ai-card">
+<h4>⭐ Review Insights</h4>
+<p>See pros and cons instantly from reviews.</p>
+</div>
+
+<div class="ai-card">
+<h4>🧠 Smart Recommendations</h4>
+<p>Discover products tailored to you.</p>
+</div>
+
+</div>
+
+</div>
+
+
+<!-- TIPS -->
+
+<div class="tips-section">
+
+<h2>Smart Shopping Tips</h2>
+
+<ul>
+<li>Compare prices before purchasing.</li>
+<li>Check delivery timelines carefully.</li>
+<li>Use AI insights for better decisions.</li>
+</ul>
+
+</div>
+
+</body>
+</html>

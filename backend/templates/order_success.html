@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+<meta charset="UTF-8">
+<title>Order Successful | ManuAI Market</title>
+
+<link rel="stylesheet" href="{{ url_for('static', filename='css/order_success.css') }}">
+
+</head>
+
+<body>
+
+<!-- NAVBAR -->
+
+<div class="navbar">
+
+<div class="logo">ManuAI Market</div>
+
+<div class="nav-right">
+<a href="/products" class="nav-btn">Marketplace</a>
+<a href="/cart" class="nav-btn">Cart</a>
+<a href="/dashboard" class="nav-btn">Dashboard</a>
+<a href="/logout" class="logout-btn">Logout</a>
+</div>
+
+</div>
+
+
+<!-- SUCCESS CONTAINER -->
+
+<div class="success-container">
+
+<div class="success-card">
+
+<div class="success-icon">
+✓
+</div>
+
+<h1>Order Placed Successfully!</h1>
+
+<p class="success-message">
+Thank you for shopping with <strong>ManuAI Market</strong>.  
+Your order has been placed successfully and will be processed shortly.
+</p>
+
+<div class="order-info">
+<p>📦 Estimated delivery: <strong>3 – 5 days</strong></p>
+<p>📧 Order confirmation sent to your registered email.</p>
+</div>
+
+<div class="action-buttons">
+
+<a href="/products" class="shop-btn">
+🛍 Continue Shopping
+</a>
+
+<a href="/dashboard" class="orders-btn">
+📊 View Dashboard
+</a>
+
+</div>
+
+</div>
+
+</div>
+
+</body>
+</html>

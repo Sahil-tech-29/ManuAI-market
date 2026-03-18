@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+<meta charset="UTF-8">
+<title>My Orders | ManuAI Market</title>
+
+<link rel="stylesheet" href="{{ url_for('static', filename='css/orders.css') }}">
+
+</head>
+
+<body>
+
+<!-- NAVBAR -->
+
+<div class="navbar">
+
+<div class="logo">ManuAI Market</div>
+
+<div class="nav-right">
+<a href="/products" class="nav-btn">Marketplace</a>
+<a href="/cart" class="nav-btn">Cart</a>
+<a href="/dashboard" class="nav-btn">Dashboard</a>
+<a href="/logout" class="logout-btn">Logout</a>
+</div>
+
+</div>
+
+
+<!-- ORDERS -->
+
+<div class="orders-container">
+
+<h1>📦 My Orders</h1>
+
+{% for data in orders %}
+
+<div class="order-card">
+
+<div class="order-header">
+<h3>Order #{{ data.order.id }}</h3>
+<span class="status">Delivered</span>
+</div>
+
+<p class="order-address">
+📍 <strong>Address:</strong> {{ data.order.address }}
+</p>
+
+<p class="order-payment">
+💳 <strong>Payment:</strong> {{ data.order.payment_method }}
+</p>
+
+
+<div class="order-items">
+
+{% for item in data.order_items %}
+
+<div class="order-item">
+
+<img src="{{ url_for('static', filename='uploads/' + item.product.image1) }}">
+
+<div class="item-info">
+
+<h4>{{ item.product.title }}</h4>
+
+<p>Quantity: {{ item.quantity }}</p>
+
+<p class="price">₹{{ item.price }}</p>
+
+</div>
+
+</div>
+
+{% endfor %}
+
+</div>
+
+
+<div class="order-total">
+Total: ₹{{ data.order.total_price }}
+</div>
+
+</div>
+
+{% endfor %}
+
+</div>
+
+</body>
+</html>

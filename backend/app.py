@@ -2,10 +2,15 @@ from flask import Flask,render_template,request,session,redirect,Response
 from database import db
 from models import User
 from models import Product
+from models import Review
+from models import Cart
+from models import Order
+from models import OrderItem
 import os
 from werkzeug.utils import secure_filename
-from ai_utils import generate_description,generate_title,generate_keywords,generate_market_analysis,generate_final_price
+from ai_utils import generate_description,generate_title,generate_keywords,generate_market_analysis,generate_final_price,generate_summary,generate_review_insight
 import markdown 
+from sqlalchemy import or_
 
 
 UPLOAD_FOLDER = "static/uploads"
@@ -26,25 +31,27 @@ with app.app_context():
     db.create_all()
 
 # Login page route 
-@app.route("/" ,methods =["GET","POST"])
+@app.route("/", methods=["GET", "POST"])
 def home():
-    if request.method =="POST":
+
+    error = None   # 👈 add this
+
+    if request.method == "POST":
 
         email = request.form.get("email")
         password = request.form.get("password")
 
-        user = User.query.filter_by(email = email , password = password).first()
+        user = User.query.filter_by(email=email, password=password).first()
 
         if user:
             session["user_id"] = user.id
             session["role"] = user.role
             session["name"] = user.name
             return redirect("/dashboard")
-        
         else:
-            return Response("Invalid email or password")
+            error = "Invalid email or password "
 
-    return render_template("index.html")
+    return render_template("index.html", error=error)
 
 
 
@@ -123,9 +130,9 @@ def upload_product():
 
         name = request.form.get("name")
         description = request.form.get("description")
-        price = request.form.get("price")
-        manufacturing_cost = request.form.get("manufacturing_cost")
-        delivery_time = request.form.get("delivery_time")
+        price = float(request.form.get("price") or 0)
+        manufacturing_cost = float(request.form.get("manufacturing_cost") or 0)
+        delivery_time = int(request.form.get("delivery_time") or 0)
 
         category = request.form.get("category")
         title = request.form.get("title")
@@ -193,22 +200,6 @@ def products():
     return render_template("products.html" , products=products)
 
 
-
-
-# Route for delete product 
-@app.route("/delete-product/<int:id>")
-def delete_product(id):
-
-    product = Product.query.get(id)
-
-    db.session.delete(product)
-    db.session.commit()
-
-    return redirect("/my-products")
-
-
-
-
 # Route for edit product details 
 @app.route("/edit-product/<int:id>", methods=["GET","POST"])
 def edit_product(id):
@@ -231,6 +222,22 @@ def edit_product(id):
 
 
 
+#Route for delete product 
+@app.route("/delete-product/<int:id>", methods=["POST"])
+def delete_product(id):
+
+    if "user_id" not in session:
+        return redirect("/")
+
+    product = Product.query.get_or_404(id)
+
+    if product.manufacturing_id != session["user_id"]:
+        return "Unauthorized", 403
+
+    db.session.delete(product)
+    db.session.commit()
+
+    return redirect("/my-products")
 
 # Route for logout 
 @app.route("/logout")
@@ -325,6 +332,295 @@ def ai_final_price():
     return formatted
 
 
+
+
+
+
+
+
+
+# CUSTOMER MODULE 
+
+
+# Route to browse marketplace of customer module 
+@app.route("/products")
+def marketplace():
+
+    search = request.args.get("search")
+    category = request.args.get("category")
+    sort = request.args.get("sort")
+
+    query = Product.query
+
+    # PROFESSIONAL SEARCH
+    if search:
+        query = query.filter(
+            or_(
+                Product.title.ilike(f"%{search}%"),
+                Product.name.ilike(f"%{search}%"),
+                Product.category.ilike(f"%{search}%"),
+                Product.description.ilike(f"%{search}%")
+            )
+        )
+
+    # CATEGORY FILTER
+    if category:
+        query = query.filter(Product.category == category)
+
+    # SORTING
+    if sort == "price_low":
+        query = query.order_by(Product.price.asc())
+
+    elif sort == "price_high":
+        query = query.order_by(Product.price.desc())
+
+    elif sort == "delivery_fast":
+        query = query.order_by(Product.delivery_time.asc())
+
+    products = query.all()
+
+    return render_template("marketplace.html", products=products)
+
+
+
+# Route for the view details of the product page of customer module
+@app.route("/product/<int:id>")
+def product_detail(id):
+
+    product = Product.query.get(id)
+
+    reviews = Review.query.filter_by(product_id=id).all()
+
+    return render_template(
+        "product_detail.html",
+        product=product,
+        reviews=reviews
+    )
+
+
+
+
+# Route for AI Generated Summary of the description of product in vire product details page of customer module 
+@app.route("/ai-summary", methods=["POST"])
+def ai_summary():
+
+    title = request.form.get("title")
+    description = request.form.get("description")
+
+    result = generate_summary(title, description)
+
+    return markdown.markdown(result)
+
+
+
+# Route for User give the ratings and that rating should store in the database in costomer module 
+@app.route("/add-review/<int:product_id>", methods=["POST"])
+def add_review(product_id):
+
+    if "user_id" not in session:
+        return redirect("/")
+
+    rating = request.form.get("rating")
+    comment = request.form.get("comment")
+
+    review = Review(
+        product_id=product_id,
+        user_name=session["name"],
+        rating=rating,
+        comment=comment
+    )
+
+    db.session.add(review)
+    db.session.commit()
+
+    return redirect(f"/product/{product_id}")
+
+
+# Ai Generated review of product by seeing different customer reviews 
+@app.route("/ai-review-analysis/<int:product_id>")
+def ai_review_analysis(product_id):
+
+    reviews = Review.query.filter_by(product_id=product_id).all()
+
+    review_text = "\n".join([r.comment for r in reviews])
+
+    result = generate_review_insight(review_text)
+
+    return markdown.markdown(result)
+
+
+
+# Route to Add to cart 
+@app.route("/add-to-cart/<int:product_id>")
+def add_to_cart(product_id):
+
+    if "user_id" not in session:
+        return redirect("/")
+
+    user_id = session["user_id"]
+
+    cart_item = Cart.query.filter_by(
+        user_id=user_id,
+        product_id=product_id
+    ).first()
+
+    if cart_item:
+        cart_item.quantity += 1
+    else:
+        cart_item = Cart(
+            user_id=user_id,
+            product_id=product_id,
+            quantity=1
+        )
+
+        db.session.add(cart_item)
+
+    db.session.commit()
+
+    return redirect("/cart")
+
+
+
+# Route to Cart page 
+@app.route("/cart")
+def cart():
+
+    if "user_id" not in session:
+        return redirect("/")
+
+    cart_items = Cart.query.filter_by(user_id=session["user_id"]).all()
+
+    total = sum(item.subtotal for item in cart_items)
+
+    return render_template("cart.html", products=cart_items, total=total)
+
+
+
+# Route to increate quantity in the cart 
+@app.route("/increase-qty/<int:product_id>")
+def increase_qty(product_id):
+
+    cart = Cart.query.filter_by(
+        user_id=session["user_id"],
+        product_id=product_id
+    ).first()
+
+    if cart:
+        cart.quantity += 1
+        db.session.commit()
+
+    return redirect("/cart")
+
+
+
+# Route to decrease quantity in cart 
+@app.route("/decrease-qty/<int:product_id>")
+def decrease_qty(product_id):
+
+    cart = Cart.query.filter_by(
+        user_id=session["user_id"],
+        product_id=product_id
+    ).first()
+
+    if cart and cart.quantity > 1:
+        cart.quantity -= 1
+        db.session.commit()
+
+    return redirect("/cart")
+
+
+#Route to remove product from cart 
+@app.route("/remove-from-cart/<int:product_id>")
+def remove_from_cart(product_id):
+
+    cart = Cart.query.filter_by(
+        user_id=session["user_id"],
+        product_id=product_id
+    ).first()
+
+    if cart:
+        db.session.delete(cart)
+        db.session.commit()
+
+    return redirect("/cart")
+
+
+
+# Route to buy product page 
+@app.route("/checkout", methods=["GET","POST"])
+def checkout():
+
+    if "user_id" not in session:
+        return redirect("/")
+
+    cart_items = Cart.query.filter_by(user_id=session["user_id"]).all()
+
+    total = sum(item.subtotal for item in cart_items)
+
+    if request.method == "POST":
+
+        address = request.form.get("address")
+        payment = request.form.get("payment")
+
+        # create order
+        new_order = Order(
+            user_id=session["user_id"],
+            total_price=total,
+            address=address,
+            payment_method=payment
+        )
+
+        db.session.add(new_order)
+        db.session.commit()
+
+
+        # save order items
+        for item in cart_items:
+
+            order_item = OrderItem(
+                order_id=new_order.id,
+                product_id=item.product_id,
+                quantity=item.quantity,
+                price=item.product.price
+            )
+
+            db.session.add(order_item)
+
+        db.session.commit()
+
+
+        # clear cart
+        for item in cart_items:
+            db.session.delete(item)
+
+        db.session.commit()
+
+        return redirect("/order-success")
+
+    return render_template("checkout.html", products=cart_items, total=total)
+
+# Route to Successful order
+@app.route("/order-success")
+def order_success():
+
+    return render_template("order_success.html")
+
+
+# Route to my orders 
+@app.route("/orders")
+def my_orders():
+    if "user_id" not in session:
+        return redirect("/")
+    orders = Order.query.filter_by(user_id=session["user_id"]).order_by(Order.id.desc()).all()
+    order_data = []
+    for order in orders:
+        items = OrderItem.query.filter_by(order_id=order.id).all()
+        order_data.append({
+            "order": order,
+            "order_items": items
+        })
+
+    return render_template("orders.html", orders=order_data)
 
 
 if(__name__) == "__main__":

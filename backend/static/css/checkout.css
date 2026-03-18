@@ -1,0 +1,316 @@
+/* RESET */
+
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+font-family:'Segoe UI',sans-serif;
+}
+
+
+/* BACKGROUND */
+
+body{
+min-height:100vh;
+background:url("../images/background image.jpg") no-repeat center center;
+background-size:cover;
+position:relative;
+}
+
+body::before{
+content:"";
+position:fixed;
+top:0;
+left:0;
+width:100%;
+height:100%;
+background:rgba(255,255,255,0.94);
+z-index:-1;
+}
+
+
+/* NAVBAR */
+
+.navbar{
+display:flex;
+justify-content:space-between;
+align-items:center;
+padding:18px 60px;
+background:white;
+box-shadow:0 4px 15px rgba(0,0,0,0.06);
+position:sticky;
+top:0;
+z-index:100;
+}
+
+.logo{
+font-size:24px;
+font-weight:700;
+background:linear-gradient(90deg,#2c7be5,#5aa9ff);
+background-clip: text;
+-webkit-background-clip:text;
+-webkit-text-fill-color:transparent;
+}
+
+.nav-right{
+display:flex;
+align-items:center;
+gap:18px;
+}
+
+.nav-btn{
+text-decoration:none;
+background:#2c7be5;
+color:white;
+padding:8px 16px;
+border-radius:6px;
+font-size:14px;
+}
+
+.logout-btn{
+text-decoration:none;
+background:#e63757;
+color:white;
+padding:8px 16px;
+border-radius:6px;
+font-size:14px;
+transition:0.2s;
+}
+
+.logout-btn:hover{
+background:#c82333;
+}
+
+
+/* MAIN CONTAINER */
+
+.checkout-container{
+max-width:1200px;
+margin:50px auto;
+background:white;
+padding:40px;
+border-radius:14px;
+box-shadow:0 20px 45px rgba(0,0,0,0.08);
+transition:0.3s;
+}
+
+.checkout-container:hover{
+box-shadow:0 25px 60px rgba(0,0,0,0.12);
+}
+
+.checkout-container h1{
+margin-bottom:10px;
+font-size:32px;
+color:#1f2d3d;
+}
+
+
+/* NOTICE */
+
+.notice{
+background:#fff7d6;
+padding:12px;
+border-radius:8px;
+font-size:14px;
+margin-bottom:30px;
+color:#7a6400;
+}
+
+
+/* LAYOUT */
+
+.checkout-layout{
+display:grid;
+grid-template-columns:1fr 1fr;
+gap:40px;
+}
+
+
+/* ORDER SUMMARY */
+
+.order-summary{
+background:#f7f9fc;
+padding:25px;
+border-radius:12px;
+border:1px solid #e3e6f0;
+}
+
+.order-summary h2{
+margin-bottom:20px;
+color:#2c7be5;
+}
+
+
+/* ORDER ITEM */
+
+.order-item{
+display:flex;
+gap:15px;
+margin-bottom:18px;
+align-items:center;
+transition:0.25s;
+}
+
+.order-item:hover{
+transform:translateX(3px);
+}
+
+.order-item img{
+width:80px;
+height:80px;
+object-fit:contain;
+background:white;
+padding:8px;
+border-radius:8px;
+border:1px solid #eee;
+}
+
+.order-info h4{
+font-size:15px;
+margin-bottom:4px;
+color:#1f2d3d;
+}
+
+.qty{
+font-size:13px;
+color:#777;
+}
+
+.price{
+color:#2c7be5;
+font-weight:600;
+}
+
+
+/* TOTAL */
+
+.total-box{
+display:flex;
+justify-content:space-between;
+align-items:center;
+margin-top:20px;
+padding-top:15px;
+border-top:1px solid #ddd;
+font-size:20px;
+font-weight:600;
+color:#1f2d3d;
+}
+
+
+/* FORM */
+
+.checkout-form{
+background:#fafbff;
+padding:25px;
+border-radius:12px;
+border:1px solid #e3e6f0;
+}
+
+.checkout-form h2{
+margin-bottom:20px;
+color:#2c7be5;
+}
+
+.checkout-form label{
+font-size:14px;
+font-weight:600;
+display:block;
+margin-bottom:6px;
+color:#344767;
+}
+
+
+/* INPUT */
+
+.checkout-form textarea{
+width:100%;
+height:100px;
+padding:12px;
+border-radius:8px;
+border:1px solid #ddd;
+margin-bottom:20px;
+resize:none;
+background:#f9fbff;
+transition:0.25s;
+}
+
+.checkout-form textarea:focus{
+border-color:#2c7be5;
+background:white;
+box-shadow:0 0 0 3px rgba(44,123,229,0.15);
+}
+
+
+/* PAYMENT OPTIONS */
+
+.payment-options{
+display:flex;
+flex-direction:column;
+gap:12px;
+margin-bottom:25px;
+}
+
+.payment-card{
+display:flex;
+align-items:center;
+gap:10px;
+background:white;
+padding:12px;
+border-radius:8px;
+border:1px solid #ddd;
+cursor:pointer;
+transition:0.25s;
+}
+
+.payment-card:hover{
+border-color:#2c7be5;
+background:#f3f7ff;
+transform:translateX(4px);
+}
+
+.payment-card input{
+cursor:pointer;
+}
+
+
+/* BUTTON */
+
+.place-order-btn{
+width:100%;
+background:linear-gradient(135deg,#2c7be5,#5aa9ff);
+color:white;
+border:none;
+padding:14px;
+border-radius:8px;
+font-size:17px;
+font-weight:600;
+cursor:pointer;
+transition:0.25s;
+}
+
+.place-order-btn:hover{
+transform:translateY(-2px);
+box-shadow:0 8px 20px rgba(44,123,229,0.35);
+}
+
+.place-order-btn:active{
+transform:scale(0.98);
+}
+
+
+/* RESPONSIVE */
+
+@media(max-width:900px){
+.checkout-layout{
+grid-template-columns:1fr;
+}
+
+.navbar{
+padding:15px 20px;
+}
+
+.checkout-container{
+width:95%;
+padding:25px;
+}
+}

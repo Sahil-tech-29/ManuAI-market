@@ -2,43 +2,47 @@
 <html lang="en">
 
 <head>
+
 <meta charset="UTF-8">
 <title>My Products | ManuAI Market</title>
 
 <link rel="stylesheet" href="{{ url_for('static', filename='css/products.css') }}">
 
 <script>
+
 function changeImage(element, id){
     document.getElementById(id).src = element.src;
 }
 
-// Show description 
+// Show description
 function showDescription(desc){
 
-let modal = document.getElementById("description-modal")
+    let modal = document.getElementById("description-modal");
 
-document.getElementById("description-content").innerHTML = desc
+    document.getElementById("description-content").innerHTML = desc;
 
-modal.style.display = "flex"
-modal.style.pointerEvents = "auto"
-
+    modal.style.display = "flex";
+    modal.style.pointerEvents = "auto";
 }
 
+// Close description
 function closeDescription(){
 
-let modal = document.getElementById("description-modal")
+    let modal = document.getElementById("description-modal");
 
-modal.style.display = "none"
-modal.style.pointerEvents = "none"
-
+    modal.style.display = "none";
+    modal.style.pointerEvents = "none";
 }
-
 
 </script>
 
 </head>
 
+
 <body>
+
+
+<!-- DESCRIPTION MODAL -->
 
 <div id="description-modal" class="description-modal">
 
@@ -54,9 +58,12 @@ modal.style.pointerEvents = "none"
     </div>
 
 </div>
+
+
 <div class="background">
 
-<!-- Navbar -->
+
+<!-- NAVBAR -->
 
 <div class="navbar">
 
@@ -67,14 +74,12 @@ modal.style.pointerEvents = "none"
 <span>Hello, {{ session['name'] }}</span>
 
 <a href="/dashboard" class="nav-btn">Dashboard</a>
-
 <a href="/logout" class="logout-btn">Logout</a>
 
 </div>
 
 </div>
 
-<!-- ADD PRODUCT BUTTON -->
 
 <div class="top-action">
 
@@ -100,33 +105,38 @@ modal.style.pointerEvents = "none"
 
 <div class="product-card">
 
-<!-- LEFT SIDE (IMAGE AREA) -->
 
 <div class="product-left">
 
-<img id="main-{{ product.id }}"
+<img
+id="main-{{ product.id }}"
 class="main-image"
-src="{{ url_for('static', filename='uploads/' + product.image1) }}">
+src="{{ url_for('static', filename='uploads/' + product.image1) }}"
+>
 
 <div class="thumbs">
 
 {% if product.image1 %}
-<img src="{{ url_for('static', filename='uploads/' + product.image1) }}"
+<img
+src="{{ url_for('static', filename='uploads/' + product.image1) }}"
 onclick="changeImage(this,'main-{{ product.id }}')">
 {% endif %}
 
 {% if product.image2 %}
-<img src="{{ url_for('static', filename='uploads/' + product.image2) }}"
+<img
+src="{{ url_for('static', filename='uploads/' + product.image2) }}"
 onclick="changeImage(this,'main-{{ product.id }}')">
 {% endif %}
 
 {% if product.image3 %}
-<img src="{{ url_for('static', filename='uploads/' + product.image3) }}"
+<img
+src="{{ url_for('static', filename='uploads/' + product.image3) }}"
 onclick="changeImage(this,'main-{{ product.id }}')">
 {% endif %}
 
 {% if product.image4 %}
-<img src="{{ url_for('static', filename='uploads/' + product.image4) }}"
+<img
+src="{{ url_for('static', filename='uploads/' + product.image4) }}"
 onclick="changeImage(this,'main-{{ product.id }}')">
 {% endif %}
 
@@ -135,11 +145,10 @@ onclick="changeImage(this,'main-{{ product.id }}')">
 </div>
 
 
-<!-- RIGHT SIDE (PRODUCT DETAILS) -->
-
 <div class="product-right">
 
 <h2 class="product-title">{{ product.title }}</h2>
+
 <span class="category-badge">{{ product.category }}</span>
 
 
@@ -149,13 +158,16 @@ onclick="changeImage(this,'main-{{ product.id }}')">
 {{ product.description[:200] | safe }}
 </div>
 
-<a href="#" 
+<a
+href="#"
 class="view-details-btn"
-onclick="showDescription(`{{ product.description | safe }}`)">
+onclick="showDescription(`{{ product.description | safe }}`)"
+>
 View Full Description →
 </a>
 
 </div>
+
 
 <div class="product-meta">
 
@@ -175,11 +187,20 @@ View Full Description →
 
 </div>
 
+
 <div class="card-actions">
 
-<a href="/edit-product/{{ product.id }}" class="edit-btn">Edit</a>
+<a href="/edit-product/{{ product.id }}" class="edit-btn">
+Edit
+</a>
 
-<a href="/delete-product/{{ product.id }}" class="delete-btn">Delete</a>
+<form action="/delete-product/{{ product.id }}" method="POST">
+
+<button type="submit" class="delete-btn">
+Delete
+</button>
+
+</form>
 
 </div>
 
@@ -191,9 +212,11 @@ View Full Description →
 
 </div>
 
+
 </div>
 
 </div>
 
 </body>
+
 </html>

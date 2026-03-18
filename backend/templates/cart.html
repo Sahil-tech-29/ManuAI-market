@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+<meta charset="UTF-8">
+<title>My Cart | ManuAI Market</title>
+
+<link rel="stylesheet" href="{{ url_for('static', filename='css/cart.css') }}">
+
+</head>
+
+<body>
+
+<!-- NAVBAR -->
+
+<div class="navbar">
+
+<div class="logo">ManuAI Market</div>
+
+<div class="nav-right">
+<a href="/products" class="nav-btn">Marketplace</a>
+<a href="/dashboard" class="nav-btn">Dashboard</a>
+<a href="/logout" class="logout-btn">Logout</a>
+</div>
+
+</div>
+
+
+<!-- CART SECTION -->
+
+<div class="cart-container">
+
+<h1>🛒 Your Shopping Cart</h1>
+
+{% if products %}
+
+<div class="cart-items">
+
+{% for item in products %}
+
+<div class="cart-item">
+
+<div class="cart-image">
+<img src="{{ url_for('static', filename='uploads/' + item.product.image1) }}">
+</div>
+
+
+<div class="cart-info">
+
+<h3>{{ item.product.title }}</h3>
+<p class="price">₹{{ item.product.price }}</p>
+
+<div class="quantity-controls">
+
+<a href="/decrease-qty/{{ item.product.id }}" class="qty-btn">−</a>
+
+<span class="qty">{{ item.quantity }}</span>
+
+<a href="/increase-qty/{{ item.product.id }}" class="qty-btn">+</a>
+
+</div>
+
+<p class="subtotal">
+Subtotal: ₹{{ item.subtotal }}
+</p>
+
+</div>
+
+
+<div class="cart-actions">
+
+<a href="/remove-from-cart/{{ item.product.id }}" class="remove-btn">
+Remove
+</a>
+
+</div>
+
+</div>
+
+{% endfor %}
+
+</div>
+
+
+<!-- SUMMARY -->
+
+<div class="cart-summary">
+
+<h2>Total: ₹{{ total }}</h2>
+
+<a href="/checkout" class="checkout-btn">
+🚀 Proceed to Checkout
+</a>
+
+</div>
+
+{% else %}
+
+<div class="empty-cart">
+
+<h2>Your cart is empty 🛍️</h2>
+
+<a href="/products" class="shop-btn">Browse Products</a>
+
+</div>
+
+{% endif %}
+
+</div>
+
+</body>
+</html>

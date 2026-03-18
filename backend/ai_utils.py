@@ -160,3 +160,69 @@ Keep it minimal.
     )
 
     return response.choices[0].message.content
+
+
+
+def generate_summary(title, description):
+
+    prompt = f"""
+You are generating a quick AI summary for an ecommerce product page.
+
+Product Title:
+{title}
+
+Product Description:
+{description}
+
+Write 4 short bullet points describing the key benefits.
+
+IMPORTANT:
+Return the response ONLY as a Markdown list using "-" format.
+
+Example:
+
+- Durable stainless steel body
+- Leak-proof design for travel
+- Lightweight and portable
+- Keeps drinks cold for hours
+"""
+
+    response = client.chat.completions.create(
+        model="llama-3.1-8b-instant",
+        messages=[{"role": "user", "content": prompt}],
+    )
+
+    return response.choices[0].message.content.strip()
+
+
+
+def generate_review_insight(reviews):
+
+    prompt = f"""
+Analyze the following ecommerce product reviews:
+
+{reviews}
+
+Provide response in this format:
+
+## Overall Sentiment
+Positive / Neutral / Negative summary.
+
+## What Customers Like
+• bullet points
+
+## Common Complaints
+• bullet points
+
+## Final Recommendation
+Short suggestion whether customers should buy the product.
+
+Keep the response concise and professional.
+"""
+
+    response = client.chat.completions.create(
+        model="llama-3.1-8b-instant",
+        messages=[{"role": "user", "content": prompt}],
+    )
+
+    return response.choices[0].message.content

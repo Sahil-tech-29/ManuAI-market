@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+<meta charset="UTF-8">
+<title>Checkout | ManuAI Market</title>
+
+<link rel="stylesheet" href="{{ url_for('static', filename='css/checkout.css') }}">
+
+</head>
+
+<body>
+
+<!-- NAVBAR -->
+
+<div class="navbar">
+
+<div class="logo">ManuAI Market</div>
+
+<div class="nav-right">
+<a href="/products" class="nav-btn">Marketplace</a>
+<a href="/cart" class="nav-btn">Cart</a>
+<a href="/dashboard" class="nav-btn">Dashboard</a>
+<a href="/logout" class="logout-btn">Logout</a>
+</div>
+
+</div>
+
+
+<!-- CHECKOUT CONTAINER -->
+
+<div class="checkout-container">
+
+<h1>Secure Checkout</h1>
+
+<p class="notice">
+⚠ This platform is developed for academic purposes.  
+Payments are simulated and no real transaction will occur.
+</p>
+
+
+<div class="checkout-layout">
+
+
+<!-- ORDER SUMMARY -->
+
+<div class="order-summary">
+
+<h2>🛒 Order Summary</h2>
+
+{% for item in products %}
+
+<div class="order-item">
+
+<img src="{{ url_for('static', filename='uploads/' + item.product.image1) }}">
+
+<div class="order-info">
+
+<h4>{{ item.product.title }}</h4>
+
+<p class="qty">Quantity: {{ item.quantity }}</p>
+
+<p class="price">₹{{ item.subtotal }}</p>
+
+</div>
+
+</div>
+
+{% endfor %}
+
+
+<div class="total-box">
+
+<h3>Total</h3>
+<span>₹{{ total }}</span>
+
+</div>
+
+</div>
+
+
+<!-- CHECKOUT FORM -->
+
+<div class="checkout-form">
+
+<h2>📦 Delivery Details</h2>
+
+<form method="POST">
+
+<label>Delivery Address</label>
+
+<textarea name="address" placeholder="Enter full delivery address..." required></textarea>
+
+
+<label>Payment Method</label>
+
+<div class="payment-options">
+
+<label class="payment-card">
+<input type="radio" name="payment" value="COD" checked>
+<span>💵 Cash on Delivery</span>
+</label>
+
+<label class="payment-card">
+<input type="radio" name="payment" value="UPI">
+<span>📱 UPI (Simulated)</span>
+</label>
+
+<label class="payment-card">
+<input type="radio" name="payment" value="CARD">
+<span>💳 Card (Simulated)</span>
+</label>
+
+</div>
+
+
+<button type="submit" class="place-order-btn">
+🚀 Place Order
+</button>
+
+</form>
+
+</div>
+
+
+</div>
+
+</div>
+
+</body>
+</html>

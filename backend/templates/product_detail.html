@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html>
+<head>
+
+<title>{{ product.title }}</title>
+
+<link rel="stylesheet" href="{{ url_for('static', filename='css/product_detail.css') }}">
+
+<script>
+
+function changeImage(element){
+
+document.getElementById("main-image").src = element.src
+
+}
+
+function getAISummary(){
+
+let title = `{{ product.title }}`;
+let description = `{{ product.description | safe }}`;
+
+fetch("/ai-summary",{
+method:"POST",
+headers:{
+"Content-Type":"application/x-www-form-urlencoded"
+},
+body:
+"title=" + encodeURIComponent(title) +
+"&description=" + encodeURIComponent(description)
+})
+.then(res=>res.text())
+.then(data=>{
+document.getElementById("ai-summary").innerHTML = data;
+});
+
+}
+
+
+function getReviewAI(){
+
+fetch("/ai-review-analysis/{{ product.id }}")
+.then(res=>res.text())
+.then(data=>{
+document.getElementById("ai-review-result").innerHTML=data;
+});
+
+}
+
+</script>
+
+</head>
+
+<body>
+
+<!-- NAVBAR -->
+
+<div class="navbar">
+
+<div class="logo">ManuAI Market</div>
+
+<div class="nav-right">
+
+<a href="/products" class="nav-btn">Marketplace</a>
+
+<a href="/dashboard" class="nav-btn">Dashboard</a>
+
+<a href="/logout" class="logout-btn">Logout</a>
+
+</div>
+
+</div>
+
+
+<!-- PRODUCT DETAIL CONTAINER -->
+
+<div class="product-detail-container">
+
+
+<!-- LEFT SIDE (IMAGES) -->
+
+<div class="product-images">
+
+<img id="main-image"
+class="main-image"
+src="{{ url_for('static', filename='uploads/' + product.image1) }}">
+
+<div class="thumbnail-row">
+
+{% if product.image1 %}
+<img src="{{ url_for('static', filename='uploads/' + product.image1) }}"
+onclick="changeImage(this)">
+{% endif %}
+
+{% if product.image2 %}
+<img src="{{ url_for('static', filename='uploads/' + product.image2) }}"
+onclick="changeImage(this)">
+{% endif %}
+
+{% if product.image3 %}
+<img src="{{ url_for('static', filename='uploads/' + product.image3) }}"
+onclick="changeImage(this)">
+{% endif %}
+
+{% if product.image4 %}
+<img src="{{ url_for('static', filename='uploads/' + product.image4) }}"
+onclick="changeImage(this)">
+{% endif %}
+
+</div>
+
+<!-- Customer reviews  -->
+<h2 class="review-title"><b>Customer Reviews</b></h2>
+
+<form action="/add-review/{{ product.id }}" method="POST" class="review-form">
+
+<div class="review-row">
+
+<label>Rating</label>
+
+<select name="rating">
+<option value="5">⭐⭐⭐⭐⭐</option>
+<option value="4">⭐⭐⭐⭐</option>
+<option value="3">⭐⭐⭐</option>
+<option value="2">⭐⭐</option>
+<option value="1">⭐</option>
+</select>
+
+</div>
+
+<textarea
+name="comment"
+placeholder="Write your review..."
+required
+></textarea>
+
+<button type="submit">Submit Review</button>
+
+</form>
+
+
+
+<!-- Reviews shown to another user too  -->
+<div class="reviews">
+
+{% for review in reviews %}
+
+<div class="review-card">
+
+<strong>{{ review.user_name }}</strong>
+
+<p>
+{% for i in range(review.rating) %}
+⭐
+{% endfor %}
+</p>
+
+<p>{{ review.comment }}</p>
+
+</div>
+
+{% endfor %}
+
+</div>
+
+<!-- Ai generated review  -->
+<button onclick="getReviewAI()" class="ai-btn">
+🤖 AI Review Insight
+</button>
+
+<div id="ai-review-result" class="ai-review-box">
+
+<div class="ai-placeholder">
+
+✨ AI analysis based on customer reviews will appear here.
+
+Click the button above to generate insights about
+customer satisfaction, common complaints, and
+whether this product is worth buying.
+
+</div>
+
+</div>
+
+
+</div>
+
+
+<!-- RIGHT SIDE (PRODUCT INFO) -->
+
+<div class="product-info">
+
+<h1>{{ product.title }}</h1>
+
+<span class="category">{{ product.category }}</span>
+
+<h2 class="price">₹{{ product.price }}</h2>
+
+<p class="delivery">🚚 Delivery in {{ product.delivery_time }} days</p>
+
+<div class="product-actions">
+
+<a href="/add-to-cart/{{ product.id }}" class="cart-btn">
+🛒 Add to Cart
+</a>
+
+<a href="/products" class="back-btn">← Back to Marketplace</a>
+
+</div>
+
+
+<!-- Description -->
+<h3>Description</h3>
+
+<div class="description">
+
+{{ product.description | safe }}
+
+</div>
+
+<h3>AI Generated Summary</h3>
+<!-- Ai generated summary  -->
+<button onclick="getAISummary()" class="ai-btn">
+✨ AI Product Summary
+</button>
+
+<div id="ai-summary" class="ai-box" >AI Generated summary will appear here....</div>
+
+
+
+
+
+</div>
+
+
+</div>
+
+</body>
+</html>

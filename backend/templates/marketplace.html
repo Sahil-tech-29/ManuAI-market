@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Marketplace | ManuAI Market</title>
+
+<link rel="stylesheet" href="{{ url_for('static', filename='css/marketplace.css') }}">
+
+</head>
+
+<body>
+
+
+<!-- NAVBAR -->
+
+<div class="navbar">
+
+<div class="logo">ManuAI Market</div>
+
+<div class="search-box">
+
+<form action="/products" method="GET">
+
+<input 
+type="text" 
+name="search"
+placeholder="Search products, categories, keywords..."
+value="{{ request.args.get('search','') }}"
+>
+
+<button type="submit">
+🔍
+</button>
+
+</form>
+
+</div>
+
+<div class="nav-right">
+
+<a href="/dashboard" class="nav-btn">Dashboard</a>
+<a href="/logout" class="logout-btn">Logout</a>
+
+</div>
+
+</div>
+
+
+
+<!-- MAIN CONTAINER -->
+
+<div class="container">
+
+
+<!-- PAGE HEADER -->
+
+<div class="page-header">
+
+<h1>Smart Marketplace</h1>
+
+<p>Explore products uploaded by manufacturers in the ManuAI marketplace.</p>
+
+</div>
+
+
+
+<!-- Filter pages  -->
+<div class="filters">
+
+<form method="GET" action="/products">
+
+<select name="category">
+
+<option value="">All Categories</option>
+
+<option value="Electronics">Electronics</option>
+<option value="Mobile Accessories">Mobile Accessories</option>
+<option value="Computers & IT">Computers & IT</option>
+
+<option value="Clothing">Clothing</option>
+<option value="Footwear">Footwear</option>
+<option value="Fashion Accessories">Fashion Accessories</option>
+
+<option value="Home & Kitchen">Home & Kitchen</option>
+<option value="Furniture">Furniture</option>
+<option value="Home Decor">Home Decor</option>
+
+<option value="Industrial Equipment">Industrial Equipment</option>
+<option value="Manufacturing Tools">Manufacturing Tools</option>
+
+<option value="Automotive Parts">Automotive Parts</option>
+<option value="Machinery">Machinery</option>
+
+<option value="Beauty & Personal Care">Beauty & Personal Care</option>
+<option value="Health & Wellness">Health & Wellness</option>
+
+<option value="Sports & Fitness">Sports & Fitness</option>
+<option value="Toys & Games">Toys & Games</option>
+
+<option value="Books & Stationery">Books & Stationery</option>
+<option value="Office Supplies">Office Supplies</option>
+
+<option value="Food Products">Food Products</option>
+<option value="Beverages">Beverages</option>
+
+</select>
+
+<select name="sort">
+
+<option value="">Sort By</option>
+<option value="price_low">Price: Low to High</option>
+<option value="price_high">Price: High to Low</option>
+<option value="delivery_fast">Fast Delivery</option>
+
+</select>
+
+<button type="submit">Apply</button>
+
+</form>
+
+</div>
+
+<!-- PRODUCTS GRID -->
+
+<div class="product-grid">
+
+{% for product in products %}
+
+<div class="product-card">
+
+
+<!-- PRODUCT IMAGE -->
+
+<div class="product-image">
+
+<img src="{{ url_for('static', filename='uploads/' + product.image1) }}">
+
+</div>
+
+
+
+<!-- PRODUCT DETAILS -->
+
+<h3>{{ product.title }}</h3>
+
+<span class="category">{{ product.category }}</span>
+
+<p class="price">₹{{ "%.0f"|format(product.price or 0) }}</p>
+
+<p class="delivery">🚚 Delivery in {{ product.delivery_time }} days</p>
+
+
+<a href="/product/{{ product.id }}" class="view-btn">
+
+View Details →
+
+</a>
+
+
+</div>
+
+{% endfor %}
+
+</div>
+
+</div>
+
+
+
+<!-- FOOTER -->
+
+<footer class="footer">
+
+<p>
+© 2026 ManuAI Market | AI-Powered Manufacturer Marketplace
+</p>
+
+</footer>
+
+
+</body>
+</html>
