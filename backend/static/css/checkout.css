@@ -314,3 +314,27 @@ width:95%;
 padding:25px;
 }
 }
+
+
+.fallback-btn{
+margin-top:12px;
+width:100%;
+background:#28c76f;
+color:white;
+border:none;
+padding:14px;
+border-radius:8px;
+font-size:15px;
+font-weight:600;
+cursor:pointer;
+transition:0.25s;
+}
+
+.fallback-btn:hover{
+transform:translateY(-2px);
+box-shadow:0 8px 20px rgba(40,199,111,0.4);
+}
+
+.fallback-btn{
+display:none;
+}

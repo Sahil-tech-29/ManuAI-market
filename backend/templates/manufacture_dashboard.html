@@ -56,6 +56,11 @@
 
 </a>
 
+<a href="/manufacturer-orders" class="card">
+
+<img src="{{ url_for('static', filename='images/orders_received.png') }}">
+</a>
+
 </div>
 
 
@@ -81,6 +86,15 @@
 <div class="stat-box">
 <h3>Top Category</h3>
 <p>{{ top_category }}</p>
+</div>
+
+<div class="stat-box">
+<h3>Orders Received 
+{% if order_count > 0 %}
+<span class="badge">New</span>
+{% endif %}
+</h3>
+<p>{{ order_count }}</p>
 </div>
 
 </div>

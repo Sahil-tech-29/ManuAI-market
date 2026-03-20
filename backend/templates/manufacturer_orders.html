@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+<title>Manufacturer Orders | ManuAI Market</title>
+<link rel="stylesheet" href="{{ url_for('static', filename='css/manufacturer_orders.css') }}">
+</head>
+
+<body>
+
+<!-- NAVBAR -->
+
+<div class="navbar">
+<div class="logo">ManuAI Market</div>
+
+<div class="nav-right">
+<a href="/dashboard" class="nav-btn">Dashboard</a>
+<a href="/my-products" class="nav-btn">My Products</a>
+<a href="/logout" class="logout-btn">Logout</a>
+</div>
+</div>
+
+
+<!-- PAGE -->
+
+<div class="container">
+
+<h1>📦 Orders for Your Products</h1>
+
+{% if orders %}
+
+{% for item in orders %}
+
+<div class="order-card">
+
+<img src="{{ url_for('static', filename='uploads/' + item.product.image1) }}">
+
+<div class="info">
+
+<h3>{{ item.product.title }}</h3>
+
+<p>Quantity: {{ item.quantity }}</p>
+
+<p class="price">₹{{ item.price }}</p>
+
+</div>
+
+</div>
+
+{% endfor %}
+
+{% else %}
+
+<p>No orders yet.</p>
+
+{% endif %}
+
+</div>
+
+</body>
+</html>

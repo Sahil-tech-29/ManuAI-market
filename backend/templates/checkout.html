@@ -8,7 +8,94 @@
 <link rel="stylesheet" href="{{ url_for('static', filename='css/checkout.css') }}">
 
 </head>
+<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+<script>
+function payNow(){
+    var options = {
+        "key": "{{ key_id }}", 
 
+        "amount": "{{ payment['amount'] }}",
+        "currency": "INR",
+        "name": "ManuAI Market",
+        "description": "Order Payment",
+        "prefill": {
+            "name": "{{ session['name'] }}",
+            "email": "test@email.com",
+            "contact": "9876543210"
+        },
+        "order_id": "{{ payment['id'] }}",
+
+        handler: function (response){
+
+            fetch("/verify-payment", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({
+                    razorpay_payment_id: response.razorpay_payment_id,
+                    razorpay_order_id: response.razorpay_order_id,
+                    razorpay_signature: response.razorpay_signature
+                })
+            })
+            .then(res => res.json())
+            .then(data => {
+                if(data.status === "success"){
+                    window.location.href = "/order-success";
+                } else {
+                    alert("Payment verification failed");
+                }
+            });
+
+        },
+
+        "theme": {
+            "color": "#2c7be5"
+        }
+    };
+
+    var rzp = new Razorpay(options);
+    rzp.open();
+}
+</script>
+<script>
+function handlePayment(){
+
+    let method = document.querySelector('input[name="payment"]:checked').value;
+
+    if(method === "COD"){
+        // direct success
+        fetch("/payment-success", {
+            method: "POST"
+        })
+        .then(res => res.json())
+        .then(data => {
+            window.location.href = "/order-success";
+        });
+    }
+    else{
+        // Razorpay for UPI / Card
+        payNow();
+    }
+}
+</script>
+<script>
+document.addEventListener("DOMContentLoaded", function(){
+
+    document.querySelectorAll('input[name="payment"]').forEach(radio => {
+        radio.addEventListener("change", function(){
+            let btn = document.getElementById("mainBtn");
+
+            if(this.value === "COD"){
+                btn.innerText = "Place Order";
+            } else {
+                btn.innerText = "Pay Now";
+            }
+        });
+    });
+
+});
+</script>
 <body>
 
 <!-- NAVBAR -->
@@ -102,21 +189,17 @@ Payments are simulated and no real transaction will occur.
 </label>
 
 <label class="payment-card">
-<input type="radio" name="payment" value="UPI">
-<span>📱 UPI (Simulated)</span>
+<input type="radio" name="payment" value="ONLINE">
+<span>💳 Pay Online (UPI / Card)</span>
 </label>
-
-<label class="payment-card">
-<input type="radio" name="payment" value="CARD">
-<span>💳 Card (Simulated)</span>
-</label>
-
 </div>
 
 
-<button type="submit" class="place-order-btn">
-🚀 Place Order
+<button type="button" class="place-order-btn" id="mainBtn" onclick="handlePayment()">
+Proceed
 </button>
+
+
 
 </form>
 

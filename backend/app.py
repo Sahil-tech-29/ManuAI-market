@@ -7,10 +7,15 @@ from models import Cart
 from models import Order
 from models import OrderItem
 import os
+import razorpay
+from flask import jsonify
 from werkzeug.utils import secure_filename
 from ai_utils import generate_description,generate_title,generate_keywords,generate_market_analysis,generate_final_price,generate_summary,generate_review_insight
 import markdown 
 from sqlalchemy import or_
+
+
+
 
 
 UPLOAD_FOLDER = "static/uploads"
@@ -20,6 +25,13 @@ os.makedirs(UPLOAD_FOLDER, exist_ok=True)
 app = Flask(__name__)
 
 app.secret_key = "flask_secretkey"
+
+
+razorpay_client = razorpay.Client(auth=(
+    os.getenv("RAZORPAY_KEY_ID"),
+    os.getenv("RAZORPAY_KEY_SECRET")
+))
+
 
 app.config["UPLOAD_FOLDER"] = UPLOAD_FOLDER
 app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///manuai.db"
@@ -110,11 +122,17 @@ def dashboard():
 
     top_category = max(set(categories), key=categories.count) if categories else "None"
 
+    orders = OrderItem.query.filter_by(
+    manufacturer_id=session["user_id"]
+    ).all()
+
+    order_count = len(orders)
     return render_template(
         "manufacture_dashboard.html",
         total_products=total_products,
         avg_profit=avg_profit,
-        top_category=top_category
+        top_category=top_category,
+        order_count=order_count
     )
 
 
@@ -547,7 +565,7 @@ def remove_from_cart(product_id):
 
 
 # Route to buy product page 
-@app.route("/checkout", methods=["GET","POST"])
+@app.route("/checkout")
 def checkout():
 
     if "user_id" not in session:
@@ -557,37 +575,115 @@ def checkout():
 
     total = sum(item.subtotal for item in cart_items)
 
-    if request.method == "POST":
+    amount = int(total * 100)  # ₹ → paisa
 
-        address = request.form.get("address")
-        payment = request.form.get("payment")
+    # create razorpay order
+    payment = razorpay_client.order.create({
+        "amount": amount,
+        "currency": "INR",
+        "payment_capture": 1
+    })
 
-        # create order
+    return render_template(
+        "checkout.html",
+        products=cart_items,
+        total=total,
+        payment=payment,
+        key_id=os.getenv("RAZORPAY_KEY_ID")
+    )
+
+
+from flask import jsonify
+
+@app.route("/payment-success", methods=["POST"])
+def payment_success():
+
+    cart_items = Cart.query.filter_by(user_id=session["user_id"]).all()
+
+    total = sum(item.subtotal for item in cart_items)
+
+    # create order
+    new_order = Order(
+        user_id=session["user_id"],
+        total_price=total,
+        address="Paid via Razorpay",
+        payment_method="Razorpay"
+    )
+
+    db.session.add(new_order)
+    db.session.commit()
+
+    # order items
+    for item in cart_items:
+        order_item = OrderItem(
+            order_id=new_order.id,
+            product_id=item.product_id,
+            quantity=item.quantity,
+            price=item.product.price,
+            manufacturer_id=item.product.manufacturing_id
+        )
+        db.session.add(order_item)
+
+    db.session.commit()
+
+    # clear cart
+    for item in cart_items:
+        db.session.delete(item)
+
+    db.session.commit()
+
+    return jsonify({"status": "success"})
+
+
+
+import hmac
+import hashlib
+from flask import request, jsonify
+
+@app.route("/verify-payment", methods=["POST"])
+def verify_payment():
+
+    data = request.get_json()
+
+    payment_id = data.get("razorpay_payment_id")
+    order_id = data.get("razorpay_order_id")
+    signature = data.get("razorpay_signature")
+
+    # create signature
+    generated_signature = hmac.new(
+        bytes(os.getenv("RAZORPAY_KEY_SECRET"), 'utf-8'),
+        bytes(order_id + "|" + payment_id, 'utf-8'),
+        hashlib.sha256
+    ).hexdigest()
+
+    if generated_signature == signature:
+
+        # ✅ PAYMENT VERIFIED → CREATE ORDER
+        cart_items = Cart.query.filter_by(user_id=session["user_id"]).all()
+
+        total = sum(item.subtotal for item in cart_items)
+
         new_order = Order(
             user_id=session["user_id"],
             total_price=total,
-            address=address,
-            payment_method=payment
+            address="Paid via Razorpay",
+            payment_method="Razorpay"
         )
 
         db.session.add(new_order)
         db.session.commit()
 
-
-        # save order items
         for item in cart_items:
-
             order_item = OrderItem(
                 order_id=new_order.id,
                 product_id=item.product_id,
                 quantity=item.quantity,
-                price=item.product.price
+                price=item.product.price,
+                manufacturer_id=item.product.manufacturing_id
             )
-
             db.session.add(order_item)
 
         db.session.commit()
-
 
         # clear cart
         for item in cart_items:
@@ -595,10 +691,13 @@ def checkout():
 
         db.session.commit()
 
-        return redirect("/order-success")
+        return jsonify({"status": "success"})
 
-    return render_template("checkout.html", products=cart_items, total=total)
+    else:
+        return jsonify({"status": "failed"})
+    
 
+    
 # Route to Successful order
 @app.route("/order-success")
 def order_success():
@@ -621,6 +720,24 @@ def my_orders():
         })
 
     return render_template("orders.html", orders=order_data)
+
+
+# Route to manufacturer notifies about the product buy 
+@app.route("/manufacturer-orders")
+def manufacturer_orders():
+
+    if "user_id" not in session:
+        return redirect("/")
+
+    if session["role"] != "manufacturer":
+        return "Unauthorized", 403
+
+    orders = OrderItem.query.filter_by(
+        manufacturer_id=session["user_id"]
+    ).all()
+
+    return render_template("manufacturer_orders.html", orders=orders)
+
 
 
 if(__name__) == "__main__":

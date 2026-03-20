@@ -10,15 +10,22 @@ class User(db.Model):
 
 class Product(db.Model):
     __tablename__ = "product"
-    id = db.Column(db.Integer , primary_key = True)
-    name = db.Column(db.String(200) , nullable = False)
+
+    id = db.Column(db.Integer, primary_key=True)
+
+    name = db.Column(db.String(200), nullable=False)
     title = db.Column(db.String(300))
-    description = db.Column(db.String(1000) ,nullable = False)
+    description = db.Column(db.String(1000), nullable=False)
+
     price = db.Column(db.Float)
     manufacturing_cost = db.Column(db.Float)
     delivery_time = db.Column(db.Integer)
-    manufacturing_id = db.Column(db.Integer)
+
+    manufacturing_id = db.Column(db.Integer, db.ForeignKey('user.id'))
+    manufacturer = db.relationship('User', backref='products')
+
     category = db.Column(db.String(100))
+
     image1 = db.Column(db.String(200))
     image2 = db.Column(db.String(200))
     image3 = db.Column(db.String(200))
@@ -60,8 +67,13 @@ class Order(db.Model):
 
 class OrderItem(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    order_id = db.Column(db.Integer,db.ForeignKey('order.id'))
-    product_id = db.Column(db.Integer,db.ForeignKey('product.id') )
+
+    order_id = db.Column(db.Integer, db.ForeignKey('order.id'))
+    product_id = db.Column(db.Integer, db.ForeignKey('product.id'))
+
     quantity = db.Column(db.Integer)
     price = db.Column(db.Float)
-    product = db.relationship('Product', backref='order_items')
+
+    manufacturer_id = db.Column(db.Integer)  
+
+    product = db.relationship('Product')

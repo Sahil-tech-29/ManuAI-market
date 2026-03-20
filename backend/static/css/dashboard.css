@@ -144,10 +144,11 @@ DASHBOARD ACTION CARDS
 
 .dashboard-cards{
 display:grid;
-grid-template-columns:1fr 1fr;
-gap:40px;
+grid-template-columns:repeat(3,1fr); 
+gap:30px;
 margin-top:40px;
 margin-bottom:60px;
+justify-items:center;
 }
 
 .card{
@@ -162,6 +163,9 @@ justify-content:center;
 position:relative;
 transition:0.35s;
 text-decoration:none;
+width:100%;
+max-width:350px;
+
 }
 
 .card img{
@@ -177,8 +181,8 @@ transition:0.3s;
 /* } */
 
 .card:hover{
-transform:translateY(-10px) scale(1.02);
-box-shadow:0 30px 70px rgba(0,0,0,0.28);
+transform:translateY(-10px) scale(1.03);
+box-shadow:0 30px 80px rgba(44,123,229,0.35);
 }
 
 .card h3{
@@ -220,7 +224,7 @@ color:#1f2d3d;
 
 .stats-grid{
 display:grid;
-grid-template-columns:repeat(3,1fr);
+grid-template-columns:repeat(4,1fr);
 gap:22px;
 }
 
@@ -384,4 +388,14 @@ margin:40px 15px;
 padding:30px;
 }
 
+}
+
+
+.badge{
+background:#28c76f;
+color:white;
+padding:4px 10px;
+border-radius:20px;
+font-size:12px;
+margin-left:8px;
 }
