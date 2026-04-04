@@ -73,7 +73,6 @@ class OrderItem(db.Model):
 
     quantity = db.Column(db.Integer)
     price = db.Column(db.Float)
-
     manufacturer_id = db.Column(db.Integer)  
 
     product = db.relationship('Product')
